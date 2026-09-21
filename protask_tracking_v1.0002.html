@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROTASK TRACKING - Flagship Launch Command Center</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            galaxy: {
+              950: '#060a17',
+              900: '#0c1326',
+              850: '#111b36',
+              800: '#1a264a',
+              700: '#2a3a69',
+              600: '#3e528f'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #060a17;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0c1326;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #2a3a69;
+      border-radius: 9999px;
+    }
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scroll">
+
+  <!-- TOP HEADER NAVBAR -->
+  <header class="no-print sticky top-0 z-40 bg-galaxy-950/95 backdrop-blur-md border-b border-galaxy-800 px-4 lg:px-8 py-3 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand & Project Title -->
+      <div class="flex items-center justify-between w-full md:w-auto gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25 shrink-0">
+            <i class="fa-solid fa-microchip text-base"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-base font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">PROTASK</span>
+              <span class="text-base font-extrabold text-white">TRACKING</span>
+              <span id="navProductCounter" class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-mono font-bold">2 SẢN PHẨM</span>
+              <span id="navBlockedAlertBadge" class="hidden px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-mono font-bold animate-pulse">
+                <i class="fa-solid fa-lock mr-1"></i><span id="navBlockedCount">0</span> BLOCKED
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400">
+              <span id="navProjectName" class="text-cyan-300 font-bold">CHIẾN DỊCH FLAGSHIP GALAXY</span>
+              <span class="text-slate-600 mx-1">•</span>
+              <span>Command Center</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Mobile Print Button -->
+        <button onclick="openPdfModal()" class="md:hidden px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-bold flex items-center gap-1">
+          <i class="fa-solid fa-file-pdf"></i> PDF
+        </button>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="flex items-center bg-galaxy-900 p-1 rounded-xl border border-galaxy-800 w-full md:w-auto justify-center">
+        <button id="tabBtnHome" onclick="switchView('home')" class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-md">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Trang Chủ (Tác Nghiệp)</span>
+        </button>
+        <button id="tabBtnDash" onclick="switchView('dash')" class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard & Cổng Tiên Quyết</span>
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="hidden md:flex items-center gap-2">
+        <button onclick="resetDefaultData()" class="px-3 py-2 rounded-xl bg-galaxy-900 hover:bg-galaxy-800 border border-galaxy-700 text-slate-300 text-xs font-semibold transition flex items-center gap-1.5" title="Khôi phục dữ liệu mặc định">
+          <i class="fa-solid fa-rotate-right text-cyan-400"></i>
+          <span>Reset Mẫu</span>
+        </button>
+        <button onclick="openPdfModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-bold tracking-wide shadow-lg shadow-rose-600/25 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>Export PDF</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-6">
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: TRANG CHỦ (FORM 4 BƯỚC + BẢNG TÁC NGHIỆP) -->
+    <!-- ========================================================================= -->
+    <div id="viewHome" class="space-y-6">
+
+      <!-- KHỐI 4 BƯỚC KHỞI TẠO CHO PIC -->
+      <div class="bg-galaxy-900/95 border-2 border-cyan-500/60 rounded-2xl p-5 lg:p-6 shadow-2xl shadow-cyan-950/40 space-y-5">
+        
+        <!-- Header Bước Khởi Tạo -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-galaxy-800 pb-3 gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-cyan-500 text-slate-950 flex items-center justify-center font-black text-sm shadow-md shadow-cyan-500/30">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-black text-white uppercase tracking-wide">Quy Trình Khởi Tạo Chiến Dịch (4 Bước Cho PIC)</h2>
+              <p class="text-[11px] text-slate-400">Điền 3 thông tin dưới đây và nhấn nút <strong class="text-cyan-300">BƯỚC 4: BẮT ĐẦU / ENTER</strong> để nạp danh mục tài liệu</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-bold self-start sm:self-auto">Cấu hình GTM Flagship</span>
+        </div>
+
+        <!-- 4 BƯỚC TRỰC QUAN -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          <!-- BƯỚC 1: TÊN DỰ ÁN (col 5) -->
+          <div class="lg:col-span-5 bg-galaxy-950/90 p-4 rounded-xl border border-galaxy-800 space-y-2">
+            <label class="text-xs font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center justify-center text-[11px] font-mono font-bold">1</span>
+              <span>Tên Dự Án / Chiến Dịch Flagship:</span>
+            </label>
+            <input type="text" id="inputProjectName" value="CHIẾN DỊCH FLAGSHIP GALAXY" placeholder="VD: GALAXY S26, GALAXY MG09..." onkeydown="if(event.key==='Enter'){triggerStartProject();}" class="w-full bg-galaxy-900 border border-galaxy-700 focus:border-cyan-400 rounded-xl px-3.5 py-2.5 text-xs text-white font-semibold focus:outline-none transition" />
+            <p class="text-[10.5px] text-slate-500">Tên dự án sẽ tự động cập nhật lên Header & Báo cáo PDF</p>
+          </div>
+
+          <!-- BƯỚC 3: DEADLINE 2 GIAI ĐOẠN (col 7) -->
+          <div class="lg:col-span-7 bg-galaxy-950/90 p-4 rounded-xl border border-galaxy-800 space-y-2">
+            <div class="text-xs font-bold text-white flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center justify-center text-[11px] font-mono font-bold">3</span>
+              <span>Thiết Lập Deadline 2 Giai Đoạn (Tự động tính lùi hạn):</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
+              <div>
+                <label class="text-[11px] font-semibold text-amber-300 block mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-lock text-[10px]"></i>
+                  <span>GĐ 1: Hạn Embargo (Bảo mật nội bộ)</span>
+                </label>
+                <input type="date" id="inputDateEmbargo" class="w-full bg-galaxy-900 border border-galaxy-700 focus:border-amber-400 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none transition" />
+              </div>
+              <div>
+                <label class="text-[11px] font-semibold text-emerald-300 block mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-bullhorn text-[10px]"></i>
+                  <span>GĐ 2: Hạn Unpack (Ra mắt & Bùng nổ)</span>
+                </label>
+                <input type="date" id="inputDateUnpack" class="w-full bg-galaxy-900 border border-galaxy-700 focus:border-emerald-400 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none transition" />
+              </div>
+            </div>
+          </div>
+
+          <!-- BƯỚC 2: SỐ LƯỢNG SẢN PHẨM TRONG CHIẾN DỊCH (col 12) -->
+          <div class="lg:col-span-12 bg-galaxy-950/90 p-4 rounded-xl border border-galaxy-800 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-bold text-white flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center justify-center text-[11px] font-mono font-bold">2</span>
+                <span>Các Sản Phẩm Trong Chiến Dịch:</span>
+                <span id="wizardProductCountBadge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">2 SẢN PHẨM</span>
+              </label>
+              <span class="text-[11px] text-slate-400">Mỗi sản phẩm thêm vào sẽ tự động nhân bản 1 bộ 5 tài liệu chuẩn (Presentation, P2P, RTB, Demo Guide, Video)</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <!-- Container hiển thị các Chip sản phẩm -->
+              <div id="productChipsContainer" class="flex flex-wrap items-center gap-2">
+                <!-- Render via JS -->
+              </div>
+
+              <!-- Ô gõ tên thêm sản phẩm mới -->
+              <div class="flex items-center gap-1.5 bg-galaxy-900 border border-galaxy-700 focus-within:border-cyan-400 rounded-xl px-3 py-1.5 text-xs">
+                <i class="fa-solid fa-mobile-screen text-slate-400 text-[11px]"></i>
+                <input type="text" id="inputNewModelName" placeholder="Gõ tên sản phẩm (VD: Fold, Flip, Ultra...)" onkeydown="if(event.key==='Enter'){addNewModel();}" class="bg-transparent text-white text-xs placeholder:text-slate-500 focus:outline-none w-48 sm:w-60" />
+                <button onclick="addNewModel()" type="button" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg text-xs flex items-center gap-1 transition shadow-sm shrink-0">
+                  <i class="fa-solid fa-plus text-[10px]"></i>
+                  <span>Thêm</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- BƯỚC 4: NÚT BẮT ĐẦU / ENTER (col 12) -->
+          <div class="lg:col-span-12 pt-1">
+            <button onclick="triggerStartProject()" id="btnStartProject" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-400 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-xl shadow-cyan-500/30 hover:scale-[1.005] active:scale-[0.99] transition-all cursor-pointer">
+              <i class="fa-solid fa-rocket text-base"></i>
+              <span>BƯỚC 4: BẮT ĐẦU DỰ ÁN / ENTER</span>
+            </button>
+            <p class="text-center text-[11px] text-slate-400 mt-2 font-mono">
+              Bấm nút trên hoặc nhấn phím <strong class="text-cyan-300 font-bold">Enter</strong> để đồng bộ toàn bộ hạn chót và nạp bảng tác nghiệp
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- BẢNG ĐIỀU PHỐI TÁC NGHIỆP THEO SẢN PHẨM -->
+      <div id="taskTableSection" class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl shadow-2xl overflow-hidden space-y-0">
+        
+        <!-- Header & Bộ Lọc của Bảng -->
+        <div class="p-4 border-b border-galaxy-800 bg-galaxy-950/80 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-table-list text-cyan-400"></i>
+                <span>Bảng điều phối tác nghiệp theo từng sản phẩm</span>
+              </h3>
+              <span id="tableModelCountText" class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">2 SẢN PHẨM</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Tiến trình 6 nấc: Kick-off (M) ➔ Draft (V1) ➔ Team Review (TR) ➔ Check File (CF) ➔ Final (VF) ➔ PM duyệt</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+            <!-- Ô tìm kiếm -->
+            <div class="relative flex-1 sm:w-56">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+              <input type="text" id="searchKeyword" oninput="renderTable()" placeholder="Tìm tài liệu, Trainer..." class="w-full bg-galaxy-900 border border-galaxy-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400" />
+            </div>
+
+            <!-- Lọc theo Model -->
+            <select id="filterModelSelect" onchange="renderTable()" class="bg-galaxy-900 border border-galaxy-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 font-mono">
+              <option value="ALL">Tất cả sản phẩm</option>
+            </select>
+
+            <!-- Lọc theo Giai đoạn -->
+            <select id="filterPhaseSelect" onchange="renderTable()" class="bg-galaxy-900 border border-galaxy-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400">
+              <option value="ALL">Tất cả giai đoạn</option>
+              <option value="Embargo">GĐ 1: Embargo</option>
+              <option value="Unpack">GĐ 2: Unpack</option>
+            </select>
+
+            <!-- Lọc theo Tình trạng phụ thuộc -->
+            <select id="filterDependencySelect" onchange="renderTable()" class="bg-galaxy-900 border border-galaxy-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-400">
+              <option value="ALL">Tất cả điều kiện</option>
+              <option value="BLOCKED">🔒 Đang bị Blocked</option>
+              <option value="READY">✓ Đủ điều kiện</option>
+            </select>
+
+            <!-- Nút thêm tài liệu bổ sung -->
+            <button onclick="openAddTaskModal()" class="px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs transition flex items-center gap-1.5 shrink-0 shadow-md">
+              <i class="fa-solid fa-plus"></i>
+              <span>Thêm file</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bảng Dữ Liệu Cuộn Ngang -->
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-galaxy-950 text-slate-400 font-bold uppercase tracking-wider border-b border-galaxy-800 text-[10px]">
+                <th class="py-3 px-3 w-10 text-center">STT</th>
+                <th class="py-3 px-3 min-w-[230px]">Tài liệu & Định dạng</th>
+                <th class="py-3 px-2 w-32 text-center">Sản phẩm</th>
+                <th class="py-3 px-3 min-w-[210px]">Trainer phụ trách (Lead & Support)</th>
+                <th class="py-3 px-3 min-w-[160px]">Hạn nộp (Công thức)</th>
+                <th class="py-3 px-3 min-w-[220px]">Tiến độ tác nghiệp (6 Nấc Review)</th>
+                <th class="py-3 px-3 min-w-[190px]">Điều kiện phụ thuộc (Gate Linking)</th>
+                <th class="py-3 px-3 min-w-[220px]">Đường link tài liệu (Nhập tay)</th>
+                <th class="py-3 px-2 w-10 text-center">Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody" class="divide-y divide-galaxy-800/60">
+              <!-- Render via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: DASHBOARD ĐIỀU HÀNH & CỔNG TIÊN QUYẾT -->
+    <!-- ========================================================================= -->
+    <div id="viewDashboard" class="hidden space-y-6">
+      
+      <!-- TẦNG 1: 4 CHỈ SỐ KPI ĐIỀU HÀNH -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Tiến độ toàn dự án -->
+        <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span class="font-semibold uppercase tracking-wider">Tiến độ Toàn Dự Án</span>
+            <span id="kpiOverallPercent" class="text-cyan-400 font-bold text-base font-mono">0%</span>
+          </div>
+          <div class="w-full bg-galaxy-950 h-2 rounded-full overflow-hidden border border-galaxy-800">
+            <div id="kpiOverallBar" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-400">
+            <span>Hoàn thành (VF/PM):</span>
+            <strong id="kpiDoneCount" class="text-white font-mono">0/0 tài liệu</strong>
+          </div>
+        </div>
+
+        <!-- Tình trạng mắt xích phụ thuộc -->
+        <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span class="font-semibold uppercase tracking-wider">Cổng Mắt Xích</span>
+            <span id="kpiGateDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="kpiBlockedCountText" class="text-xl font-bold text-white font-mono">0 BLOCKED</span>
+          </div>
+          <p id="kpiGateSubtext" class="text-[11px] text-slate-400">Tất cả cổng tiên quyết thông luồng</p>
+        </div>
+
+        <!-- Mốc Embargo -->
+        <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span class="font-semibold text-amber-300 uppercase tracking-wider">Hạn Embargo</span>
+            <span id="kpiEmbargoBadge" class="text-[10px] px-2 py-0.5 rounded font-mono bg-amber-500/20 text-amber-300"></span>
+          </div>
+          <div id="kpiEmbargoDateText" class="text-base font-bold text-white font-mono">--/--/----</div>
+          <p class="text-[11px] text-slate-400">Đào tạo bảo mật nội bộ</p>
+        </div>
+
+        <!-- Mốc Unpack -->
+        <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span class="font-semibold text-emerald-300 uppercase tracking-wider">Hạn Unpack</span>
+            <span id="kpiUnpackBadge" class="text-[10px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300"></span>
+          </div>
+          <div id="kpiUnpackDateText" class="text-base font-bold text-white font-mono">--/--/----</div>
+          <p class="text-[11px] text-slate-400">Công bố & Mở bán chính thức</p>
+        </div>
+      </div>
+
+      <!-- TẦNG 1.1: TỶ TRỌNG & TIẾN ĐỘ THEO TỪNG DÒNG SẢN PHẨM -->
+      <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-5 space-y-4 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-galaxy-800 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-purple-400"></i>
+              <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tỷ Trọng & Tiến Độ Theo Dòng Sản Phẩm</h3>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">DỰ ÁN ĐA SẢN PHẨM</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Thống kê số lượng file, tỷ trọng % và tiến trình hoàn thành của từng model</p>
+          </div>
+          <div class="text-xs text-slate-400">
+            <span>Tổng đầu mục tài liệu:</span>
+            <strong id="modelTotalCountText" class="text-cyan-300 font-mono text-sm ml-1">0 tài liệu</strong>
+          </div>
+        </div>
+
+        <!-- Thanh tỷ trọng phân bổ tài liệu -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-[11px] text-slate-400">
+            <span>Phân bổ số lượng tài liệu theo Model:</span>
+            <div id="modelDistributionLegend" class="flex flex-wrap items-center gap-3 font-mono text-slate-300"></div>
+          </div>
+          <div id="modelDistributionBar" class="h-3 w-full bg-galaxy-950 rounded-full overflow-hidden flex border border-galaxy-800"></div>
+        </div>
+
+        <!-- Lưới thẻ chi tiết từng sản phẩm -->
+        <div id="modelCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1"></div>
+      </div>
+
+      <!-- TẦNG 2: RC TASK ADVISOR & CỔNG TIÊN QUYẾT CHIẾN LƯỢC -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- RC Task Advisor (2 cols) -->
+        <div class="lg:col-span-2 bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-5 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between border-b border-galaxy-800 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-400 to-indigo-600 flex items-center justify-center text-white text-xs shadow-md">
+                <i class="fa-solid fa-compass-drafting"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">RC Task Advisor (Trợ Lý Điều Hành Dự Án)</h4>
+                <p class="text-[10px] text-slate-400">Chẩn đoán điểm nghẽn & Đề xuất hành động tức thì cho PIC</p>
+              </div>
+            </div>
+            <span id="aiHealthBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-full font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">DỰ ÁN KHẢ QUAN</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 bg-galaxy-950/70 rounded-xl border border-galaxy-800/80">
+              <span class="font-bold text-cyan-300 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-bullseye text-[11px]"></i> Nhận định nhanh từ hệ thống:
+              </span>
+              <p id="aiVerdictText" class="text-slate-300 mt-1 leading-relaxed text-[11.5px]"></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              <div class="p-3 bg-rose-950/20 rounded-xl border border-rose-500/30">
+                <span class="font-bold text-rose-300 flex items-center gap-1.5 text-xs">
+                  <i class="fa-solid fa-triangle-exclamation text-[11px]"></i> Cảnh báo rủi ro & Điểm nghẽn mắt xích:
+                </span>
+                <div id="aiBottlenecksText" class="text-slate-300 mt-1.5 text-[11px] leading-relaxed space-y-1"></div>
+              </div>
+
+              <div class="p-3 bg-emerald-950/20 rounded-xl border border-emerald-500/30">
+                <span class="font-bold text-emerald-300 flex items-center gap-1.5 text-xs">
+                  <i class="fa-solid fa-list-check text-[11px]"></i> Đề xuất hành động 24h cho PIC:
+                </span>
+                <div id="aiActionPlanText" class="text-slate-300 mt-1.5 text-[11px] leading-relaxed space-y-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cổng Tiên Quyết HQ & Sample (1 col) -->
+        <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-5 space-y-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-galaxy-800 pb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-dungeon text-amber-400"></i>
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider">Cổng Tiên Quyết (Prerequisite Gates)</h4>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono">Bật / Tắt</span>
+          </div>
+          <p class="text-[10.5px] text-slate-400">
+            Khi tắt cổng, toàn bộ các tài liệu phụ thuộc ở Trang chủ sẽ lập tức bị khóa <strong class="text-rose-400 font-bold">🔒 Blocked</strong>.
+          </p>
+
+          <div class="space-y-2 text-xs pt-1">
+            <!-- Gate 1: HQ Deck -->
+            <label class="flex items-center justify-between p-2.5 bg-galaxy-950 rounded-xl border border-galaxy-800 hover:border-cyan-500 cursor-pointer transition">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="gate_hq" checked onchange="toggleGate('hq', this.checked)" class="rounded text-cyan-500 focus:ring-0 w-4 h-4 cursor-pointer" />
+                <div>
+                  <span class="text-slate-200 text-xs font-bold block">1. Workshop Deck HQ</span>
+                  <span class="text-[10px] text-slate-500 block">Chặn: Presentation, One Pager</span>
+                </div>
+              </div>
+              <span id="gate_tag_hq" class="text-[9.5px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">Đã có</span>
+            </label>
+
+            <!-- Gate 2: Thông số chính thức -->
+            <label class="flex items-center justify-between p-2.5 bg-galaxy-950 rounded-xl border border-galaxy-800 hover:border-cyan-500 cursor-pointer transition">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="gate_spec" checked onchange="toggleGate('spec', this.checked)" class="rounded text-cyan-500 focus:ring-0 w-4 h-4 cursor-pointer" />
+                <div>
+                  <span class="text-slate-200 text-xs font-bold block">2. Thông số chính thức</span>
+                  <span class="text-[10px] text-slate-500 block">Chặn: P2P, Question Bank</span>
+                </div>
+              </div>
+              <span id="gate_tag_spec" class="text-[9.5px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">Đã có</span>
+            </label>
+
+            <!-- Gate 3: MKT Term Final -->
+            <label class="flex items-center justify-between p-2.5 bg-galaxy-950 rounded-xl border border-galaxy-800 hover:border-cyan-500 cursor-pointer transition">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="gate_mkt" checked onchange="toggleGate('mkt', this.checked)" class="rounded text-cyan-500 focus:ring-0 w-4 h-4 cursor-pointer" />
+                <div>
+                  <span class="text-slate-200 text-xs font-bold block">3. MKT Term Final</span>
+                  <span class="text-[10px] text-slate-500 block">Chặn: Demo Guide</span>
+                </div>
+              </div>
+              <span id="gate_tag_mkt" class="text-[9.5px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">Đã có</span>
+            </label>
+
+            <!-- Gate 4: Sample máy vật lý -->
+            <label class="flex items-center justify-between p-2.5 bg-galaxy-950 rounded-xl border border-galaxy-800 hover:border-cyan-500 cursor-pointer transition">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="gate_sample" checked onchange="toggleGate('sample', this.checked)" class="rounded text-cyan-500 focus:ring-0 w-4 h-4 cursor-pointer" />
+                <div>
+                  <span class="text-slate-200 text-xs font-bold block">4. Máy mẫu vật lý (Sample)</span>
+                  <span class="text-[10px] text-slate-500 block">Chặn: Video How to Demo</span>
+                </div>
+              </div>
+              <span id="gate_tag_sample" class="text-[9.5px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">Đã có</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TẦNG 3: CẢM BIẾN QUÁ TẢI TRAINER & PHÂN BỔ ĐỊNH DẠNG -->
+      <div class="bg-galaxy-900/90 border border-galaxy-800 rounded-2xl p-5 space-y-4 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-galaxy-800 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-gauge-high text-cyan-400"></i>
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider">Cảm Biến Quá Tải Trainer (Workload Sensor)</h4>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Tự động tính tải Lead (65%) & Support (35%), bóc tách theo sản phẩm và độ khó Video &times; 3</p>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs">
+            <div class="px-3 py-1.5 rounded-xl bg-galaxy-950 border border-galaxy-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              <span class="text-slate-400">Quá tải:</span>
+              <strong id="countOverload" class="text-rose-400 font-mono">0</strong>
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-galaxy-950 border border-galaxy-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span class="text-slate-400">Tải cao:</span>
+              <strong id="countHeavy" class="text-amber-400 font-mono">0</strong>
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-galaxy-950 border border-galaxy-800 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-slate-400">Tối ưu:</span>
+              <strong id="countOptimal" class="text-emerald-400 font-mono">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="trainerCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+          <!-- Render via JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL EXPORT PDF PREVIEW -->
+  <div id="pdfModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-3 lg:p-6 no-print">
+    <div class="bg-galaxy-900 border border-galaxy-700 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="px-6 py-3.5 border-b border-galaxy-800 flex items-center justify-between bg-galaxy-950">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-file-pdf text-rose-500 text-lg"></i>
+          <div>
+            <h3 class="text-sm font-bold text-white">Xuất Báo Cáo Tiến Độ Dự Án (PDF A4 Preview)</h3>
+            <p class="text-[11px] text-slate-400">Báo cáo đa sản phẩm kèm bảng nấc kiểm duyệt, tình trạng Blocked và chữ ký pháp lý</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-rose-600/30 cursor-pointer">
+            <i class="fa-solid fa-print"></i>
+            <span>Lưu / In PDF (Ctrl + P)</span>
+          </button>
+          <button onclick="closePdfModal()" class="w-8 h-8 rounded-lg bg-galaxy-800 hover:bg-galaxy-700 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6 bg-slate-900/60 custom-scroll flex justify-center">
+        <div id="pdfContentArea" class="bg-white text-slate-900 w-full max-w-4xl p-8 rounded-xl shadow-2xl space-y-6 text-xs font-sans">
+          <!-- Render via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL THÊM FILE TÀI LIỆU BỔ SUNG -->
+  <div id="addTaskModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-galaxy-900 border border-galaxy-700 rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-galaxy-800 pb-3">
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-cyan-400"></i> Thêm tài liệu mới
+        </h4>
+        <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-white text-sm cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-300">Tên tài liệu:</label>
+          <input type="text" id="modal_taskName" placeholder="VD: Demo Guide, Video How to Demo..." class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-semibold text-slate-300">Sản phẩm:</label>
+            <select id="modal_taskModel" class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none font-mono">
+            </select>
+          </div>
+          <div>
+            <label class="font-semibold text-slate-300">Định dạng File:</label>
+            <select id="modal_taskFormat" class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none">
+              <option value="Power Point">Power Point</option>
+              <option value="Video">Video</option>
+              <option value="Excel">Excel</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-semibold text-slate-300">Giai đoạn:</label>
+            <select id="modal_taskPhase" class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none">
+              <option value="Embargo">GĐ 1: Embargo</option>
+              <option value="Unpack">GĐ 2: Unpack</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-semibold text-slate-300">Cổng phụ thuộc:</label>
+            <select id="modal_taskDepGate" class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none">
+              <option value="hq">Workshop Deck HQ</option>
+              <option value="spec">Thông số chính thức</option>
+              <option value="mkt">MKT Term Final</option>
+              <option value="sample">Máy mẫu vật lý (Sample)</option>
+              <option value="none">Không có phụ thuộc</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-300">Trainer phụ trách (PIC):</label>
+          <input type="text" id="modal_taskPic" placeholder="VD: PNam, Hằng..." class="w-full mt-1 bg-galaxy-950 border border-galaxy-700 rounded-lg p-2 text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-galaxy-800">
+        <button onclick="closeAddTaskModal()" class="px-3 py-1.5 bg-galaxy-800 hover:bg-galaxy-700 text-slate-300 rounded-lg text-xs cursor-pointer">Hủy</button>
+        <button onclick="saveModalTask()" class="px-4 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs cursor-pointer">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastAlert" class="fixed bottom-5 right-5 z-50 px-4 py-3 bg-galaxy-900 border border-cyan-400 text-cyan-300 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-cyan-400 text-sm"></i>
+    <span id="toastAlertText">Thông báo</span>
+  </div>
+
+  <script>
+    function formatFutureDate(daysAhead) {
+      const d = new Date();
+      d.setDate(d.getDate() + daysAhead);
+      return d.toISOString().split('T')[0];
+    }
+
+    // 5 TÀI LIỆU TIÊU CHUẨN ĐƯỢC NHÂN BẢN THEO TỪNG SẢN PHẨM (KÈM CỔNG LIÊN KẾT DEP_GATE)
+    const TEMPLATE_DOCUMENTS_PER_PRODUCT = [
+      {
+        baseName: "Presentation",
+        format: "Power Point",
+        ratio: "16:9",
+        phase: "Embargo",
+        descSuffix: "Slide đào tạo chuyên sâu tính năng, thiết kế & kịch bản bán lẻ cho",
+        formula: "embargo_m7",
+        depGate: "hq",
+        depLabel: "Workshop Deck HQ"
+      },
+      {
+        baseName: "P2P (So sánh đối thủ)",
+        format: "Power Point",
+        ratio: "9:16",
+        phase: "Embargo",
+        descSuffix: "Bảng so sánh thông số Tấn công & Phòng thủ trực diện của",
+        formula: "embargo_m3",
+        depGate: "spec",
+        depLabel: "Thông số chính thức"
+      },
+      {
+        baseName: "Reason to Buy",
+        format: "Power Point",
+        ratio: "9:16",
+        phase: "Unpack",
+        descSuffix: "Snapcard lý do nâng cấp không thể bỏ lỡ dành cho khách hàng mua",
+        formula: "unpack_m5",
+        depGate: "presentation_dep",
+        depLabel: "Presentation Core"
+      },
+      {
+        baseName: "Demo Guide",
+        format: "Power Point",
+        ratio: "16:9",
+        phase: "Unpack",
+        descSuffix: "Hướng dẫn chi tiết kịch bản thao tác trải nghiệm thực tế trên",
+        formula: "unpack_m7",
+        depGate: "mkt",
+        depLabel: "MKT Term Final"
+      },
+      {
+        baseName: "Video How to Demo",
+        format: "Video",
+        ratio: "16:9",
+        phase: "Unpack",
+        descSuffix: "Video thực tế thao tác trải nghiệm trên tay máy",
+        formula: "unpack_m3",
+        depGate: "video_demo",
+        depLabel: "Demo Guide + Sample máy"
+      }
+    ];
+
+    // CÁC TÀI LIỆU DÙNG CHUNG TOÀN CHIẾN DỊCH
+    const COMMON_CAMPAIGN_DOCUMENTS = [
+      {
+        name: "Presentation (Core Deck Tổng Hợp)",
+        model: "Chung",
+        format: "Power Point",
+        ratio: "16:9",
+        phase: "Embargo",
+        desc: "Sử dụng cho toàn bộ hoạt động đào tạo online - offline toàn quốc",
+        formula: "embargo_m7",
+        depGate: "hq",
+        depLabel: "Workshop Deck HQ"
+      },
+      {
+        name: "One Pager (Sales Talk Tổng Quan)",
+        model: "Chung",
+        format: "Power Point",
+        ratio: "16:9",
+        phase: "Embargo",
+        desc: "Tài liệu cho nhân viên bán hàng nắm tổng quan và cách tư vấn",
+        formula: "embargo_m7",
+        depGate: "hq",
+        depLabel: "Workshop Deck HQ"
+      },
+      {
+        name: "Questions Bank (Ngân hàng câu hỏi)",
+        model: "Chung",
+        format: "Excel",
+        ratio: "Excel",
+        phase: "Unpack",
+        desc: "Bộ câu hỏi & đáp án trắc nghiệm checkout lớp training",
+        formula: "unpack_m7",
+        depGate: "spec",
+        depLabel: "Thông số chính thức"
+      }
+    ];
+
+    const DEFAULT_MODELS = [
+      { code: "Z-FOLD", name: "Galaxy Z Fold", color: "purple" },
+      { code: "Z-FLIP", name: "Galaxy Z Flip", color: "pink" }
+    ];
+
+    // APPLICATION STATE (TÍCH HỢP 4 CỔNG ĐIỀU KIỆN TIÊN QUYẾT)
+    let state = {
+      projectName: "CHIẾN DỊCH FLAGSHIP GALAXY",
+      deadlines: {
+        embargo: formatFutureDate(14),
+        unpack: formatFutureDate(35)
+      },
+      models: JSON.parse(JSON.stringify(DEFAULT_MODELS)),
+      tasks: [],
+      gates: {
+        hq: true,       // 1. Workshop Deck HQ
+        spec: true,     // 2. Thông số chính thức
+        mkt: true,      // 3. MKT Term Final
+        sample: true    // 4. Sample máy vật lý
+      },
+      currentView: 'home'
+    };
+
+    // CƠ CHẾ AUTO-SAVE & PERSISTENCE VÀO LOCALSTORAGE
+    const STORAGE_KEY = "PROTASK_TRACKING_STATE_V2";
+
+    function saveStateToLocalStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("Không thể lưu LocalStorage:", e);
+      }
+    }
+
+    function loadStateFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.projectName && parsed.tasks && parsed.tasks.length > 0) {
+            state = parsed;
+            return true;
+          }
+        }
+      } catch (e) {
+        console.warn("Lỗi đọc LocalStorage:", e);
+      }
+      return false;
+    }
+
+    // HÀM KIỂM TRA ĐIỀU KIỆN PHỤ THUỘC THEO THỜI GIAN THỰC
+    function checkTaskDependency(task) {
+      if (task.depGate === 'hq' && !state.gates.hq) {
+        return { isBlocked: true, reason: 'Chờ Workshop Deck HQ' };
+      }
+      if (task.depGate === 'spec' && !state.gates.spec) {
+        return { isBlocked: true, reason: 'Chờ Thông số chính thức' };
+      }
+      if (task.depGate === 'mkt' && !state.gates.mkt) {
+        return { isBlocked: true, reason: 'Chờ MKT Term Final' };
+      }
+      if (task.depGate === 'sample' && !state.gates.sample) {
+        return { isBlocked: true, reason: 'Chờ Sample máy vật lý' };
+      }
+      if (task.depGate === 'video_demo') {
+        if (!state.gates.sample) {
+          return { isBlocked: true, reason: 'Chờ Sample máy vật lý' };
+        }
+        if (!state.gates.mkt) {
+          return { isBlocked: true, reason: 'Chờ Demo Guide (MKT Term)' };
+        }
+      }
+      if (task.depGate === 'presentation_dep') {
+        if (!state.gates.hq) {
+          return { isBlocked: true, reason: 'Chờ Presentation (Deck HQ)' };
+        }
+      }
+      return { isBlocked: false, reason: 'Đủ điều kiện' };
+    }
+
+    function generateTasksFromModelList() {
+      const newTasks = [];
+      let currentId = 1;
+
+      // 1. Tài liệu Chung
+      COMMON_CAMPAIGN_DOCUMENTS.forEach(tpl => {
+        newTasks.push({
+          id: currentId++,
+          name: tpl.name,
+          model: "Chung",
+          format: tpl.format,
+          ratio: tpl.ratio,
+          phase: tpl.phase,
+          desc: tpl.desc,
+          formula: tpl.formula,
+          pic: "",
+          checkpoints: { m: true, v1: false, tr: false, cf: false, vf: false, pm: false },
+          depGate: tpl.depGate,
+          depLabel: tpl.depLabel,
+          link: ""
+        });
+      });
+
+      // 2. Nhân bản 5 tài liệu chuẩn cho từng sản phẩm
+      state.models.forEach(model => {
+        TEMPLATE_DOCUMENTS_PER_PRODUCT.forEach(tpl => {
+          newTasks.push({
+            id: currentId++,
+            name: `${tpl.baseName} - ${model.code}`,
+            model: model.code,
+            format: tpl.format,
+            ratio: tpl.ratio,
+            phase: tpl.phase,
+            desc: `${tpl.descSuffix} ${model.name}`,
+            formula: tpl.formula,
+            pic: "",
+            checkpoints: { m: true, v1: false, tr: false, cf: false, vf: false, pm: false },
+            depGate: tpl.depGate,
+            depLabel: tpl.depLabel,
+            link: ""
+          });
+        });
+      });
+
+      state.tasks = newTasks;
+    }
+
+    function initApp() {
+      // 1. Kiểm tra xem có dữ liệu lưu trong máy từ trước không
+      const hasSaved = loadStateFromLocalStorage();
+
+      const pNameInput = document.getElementById('inputProjectName');
+      if (pNameInput) pNameInput.value = state.projectName;
+
+      const embInput = document.getElementById('inputDateEmbargo');
+      if (embInput) embInput.value = state.deadlines.embargo;
+
+      const unpInput = document.getElementById('inputDateUnpack');
+      if (unpInput) unpInput.value = state.deadlines.unpack;
+
+      // Cập nhật checkbox các cổng theo state
+      ['hq', 'spec', 'mkt', 'sample'].forEach(k => {
+        const chk = document.getElementById(`gate_${k}`);
+        if (chk) chk.checked = !!state.gates[k];
+        updateGateBadgeUI(k, !!state.gates[k]);
+      });
+
+      // Nếu chưa có lưu thì tạo danh sách mặc định
+      if (!hasSaved || !state.tasks || state.tasks.length === 0) {
+        generateTasksFromModelList();
+      }
+
+      renderProductChips();
+      populateDropdowns();
+      renderTable();
+      renderDashboard();
+
+      if (hasSaved) {
+        showToast(`⚡ Đã tự động khôi phục dữ liệu dự án: ${state.projectName}`);
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastAlert');
+      const text = document.getElementById('toastAlertText');
+      if (!toast || !text) return;
+      text.innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2600);
+    }
+
+    function triggerStartProject() {
+      const nameInput = document.getElementById('inputProjectName');
+      const embInput = document.getElementById('inputDateEmbargo');
+      const unpInput = document.getElementById('inputDateUnpack');
+
+      const nameVal = nameInput ? nameInput.value.trim() : "";
+      if (!nameVal) {
+        showToast("Vui lòng nhập Tên Dự Án ở Bước 1!");
+        if (nameInput) nameInput.focus();
+        return;
+      }
+
+      if (state.models.length === 0) {
+        showToast("Vui lòng thêm ít nhất 1 sản phẩm ở Bước 2!");
+        return;
+      }
+
+      state.projectName = nameVal;
+      state.deadlines.embargo = embInput && embInput.value ? embInput.value : formatFutureDate(14);
+      state.deadlines.unpack = unpInput && unpInput.value ? unpInput.value : formatFutureDate(35);
+
+      const navTitle = document.getElementById('navProjectName');
+      if (navTitle) navTitle.innerText = state.projectName;
+
+      saveStateToLocalStorage();
+      renderTable();
+      renderDashboard();
+
+      showToast(`🚀 Chiến dịch ${state.projectName} đã kích hoạt với ${state.models.length} sản phẩm & ${state.tasks.length} tài liệu!`);
+
+      const tableElem = document.getElementById('taskTableSection');
+      if (tableElem) {
+        tableElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function addNewModel() {
+      const input = document.getElementById('inputNewModelName');
+      if (!input) return;
+      const rawName = input.value.trim();
+      if (!rawName) {
+        showToast("Vui lòng nhập tên sản phẩm!");
+        input.focus();
+        return;
+      }
+
+      let cleanCode = rawName.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+      if (cleanCode.length > 7) {
+        cleanCode = cleanCode.substring(0, 6);
+      }
+      if (!cleanCode) cleanCode = `P${state.models.length + 1}`;
+
+      let finalCode = cleanCode;
+      let counter = 1;
+      while (state.models.some(m => m.code === finalCode)) {
+        finalCode = `${cleanCode}${counter++}`;
+      }
+
+      const colors = ['purple', 'pink', 'amber', 'blue', 'emerald'];
+      const chosenColor = colors[state.models.length % colors.length];
+
+      state.models.push({
+        code: finalCode,
+        name: rawName,
+        color: chosenColor
+      });
+
+      input.value = '';
+
+      TEMPLATE_DOCUMENTS_PER_PRODUCT.forEach(tpl => {
+        state.tasks.push({
+          id: Date.now() + Math.floor(Math.random() * 1000),
+          name: `${tpl.baseName} - ${finalCode}`,
+          model: finalCode,
+          format: tpl.format,
+          ratio: tpl.ratio,
+          phase: tpl.phase,
+          desc: `${tpl.descSuffix} ${rawName}`,
+          formula: tpl.formula,
+          pic: "",
+          checkpoints: { m: true, v1: false, tr: false, cf: false, vf: false, pm: false },
+          depGate: tpl.depGate,
+          depLabel: tpl.depLabel,
+          link: ""
+        });
+      });
+
+      renderProductChips();
+      populateDropdowns();
+      renderTable();
+      renderDashboard();
+
+      showToast(`Đã thêm ${rawName}! Đã nhân bản thêm 5 tài liệu tương ứng.`);
+    }
+
+    function removeModel(code) {
+      if (state.models.length <= 1) {
+        showToast("Dự án cần ít nhất 1 sản phẩm!");
+        return;
+      }
+
+      const target = state.models.find(m => m.code === code);
+      const name = target ? target.name : code;
+
+      state.models = state.models.filter(m => m.code !== code);
+      state.tasks = state.tasks.filter(t => t.model !== code);
+
+      renderProductChips();
+      populateDropdowns();
+      renderTable();
+      renderDashboard();
+
+      showToast(`Đã xóa ${name} và thu gọn các tài liệu liên quan.`);
+    }
+
+    function renderProductChips() {
+      const container = document.getElementById('productChipsContainer');
+      const badge = document.getElementById('wizardProductCountBadge');
+      const navBadge = document.getElementById('navProductCounter');
+      const tableBadge = document.getElementById('tableModelCountText');
+
+      const countText = `${state.models.length} SẢN PHẨM`;
+      if (badge) badge.innerText = countText;
+      if (navBadge) navBadge.innerText = countText;
+      if (tableBadge) tableBadge.innerText = countText;
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      state.models.forEach(m => {
+        const chip = document.createElement('div');
+        chip.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-galaxy-900 border border-purple-500/40 text-xs shadow-sm";
+        chip.innerHTML = `
+          <span class="w-5 h-5 rounded-lg bg-galaxy-950 border border-galaxy-700 flex items-center justify-center font-mono font-bold text-[9px] text-cyan-300">${m.code}</span>
+          <span class="font-bold text-white">${m.name}</span>
+          <button onclick="removeModel('${m.code}')" title="Xóa ${m.name}" type="button" class="ml-1 text-slate-400 hover:text-rose-400 transition p-0.5 cursor-pointer">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        `;
+        container.appendChild(chip);
+      });
+    }
+
+    function populateDropdowns() {
+      const modelSelect = document.getElementById('filterModelSelect');
+      if (modelSelect) {
+        const currentVal = modelSelect.value || 'ALL';
+        modelSelect.innerHTML = `<option value="ALL">Tất cả sản phẩm</option>`;
+        state.models.forEach(m => {
+          modelSelect.innerHTML += `<option value="${m.code}">${m.name} (${m.code})</option>`;
+        });
+        modelSelect.innerHTML += `<option value="Chung">Tài liệu Chung</option>`;
+        modelSelect.value = currentVal;
+      }
+
+      const modalModelSelect = document.getElementById('modal_taskModel');
+      if (modalModelSelect) {
+        modalModelSelect.innerHTML = `<option value="Chung">Chung</option>`;
+        state.models.forEach(m => {
+          modalModelSelect.innerHTML += `<option value="${m.code}">${m.code} (${m.name})</option>`;
+        });
+      }
+    }
+
+    function calculateTaskDeadline(task) {
+      const embDate = new Date(state.deadlines.embargo);
+      const unpDate = new Date(state.deadlines.unpack);
+
+      let target = new Date(embDate);
+      let label = "Trước Embargo 1 tuần";
+
+      switch (task.formula) {
+        case 'embargo_m7':
+          target = new Date(embDate);
+          target.setDate(target.getDate() - 7);
+          label = "Trước Embargo 1 tuần";
+          break;
+        case 'embargo_m5':
+          target = new Date(embDate);
+          target.setDate(target.getDate() - 5);
+          label = "Trước Embargo 5 ngày";
+          break;
+        case 'embargo_m3':
+          target = new Date(embDate);
+          target.setDate(target.getDate() - 3);
+          label = "Trước Embargo 3 ngày";
+          break;
+        case 'unpack_m7':
+          target = new Date(unpDate);
+          target.setDate(target.getDate() - 7);
+          label = "Trước Unpack 1 tuần";
+          break;
+        case 'unpack_m5':
+          target = new Date(unpDate);
+          target.setDate(target.getDate() - 5);
+          label = "Trước Unpack 5 ngày";
+          break;
+        case 'unpack_m3':
+          target = new Date(unpDate);
+          target.setDate(target.getDate() - 3);
+          label = "Trước Unpack 3 ngày";
+          break;
+        default:
+          target = new Date(embDate);
+      }
+
+      const dateStr = isNaN(target.getTime()) ? 'N/A' : target.toLocaleDateString('vi-VN');
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const isComplete = task.checkpoints && (task.checkpoints.vf || task.checkpoints.pm);
+      const isOverdue = target < today && !isComplete;
+      const daysDiff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+
+      return {
+        dateStr,
+        label,
+        isOverdue,
+        daysDiff,
+        isComplete
+      };
+    }
+
+    function extractTrainers(picString) {
+      if (!picString || !picString.trim()) return [];
+      const parts = picString.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+      return parts.map((name, index) => ({
+        name,
+        role: index === 0 ? 'Lead' : 'Support',
+        isLead: index === 0
+      }));
+    }
+
+    function toggleStep(taskId, stepKey) {
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      const dep = checkTaskDependency(task);
+      if (dep.isBlocked && !task.checkpoints[stepKey]) {
+        showToast(`⚠️ Chú ý: ${task.name} đang bị khóa (${dep.reason})!`);
+      }
+
+      if (!task.checkpoints) {
+        task.checkpoints = { m: false, v1: false, tr: false, cf: false, vf: false, pm: false };
+      }
+
+      task.checkpoints[stepKey] = !task.checkpoints[stepKey];
+
+      if (task.checkpoints[stepKey]) {
+        const sequence = ['m', 'v1', 'tr', 'cf', 'vf', 'pm'];
+        const targetIndex = sequence.indexOf(stepKey);
+        for (let i = 0; i <= targetIndex; i++) {
+          task.checkpoints[sequence[i]] = true;
+        }
+      }
+
+      saveStateToLocalStorage();
+      renderTable();
+      renderDashboard();
+      showToast(`Đã cập nhật nấc kiểm duyệt ${stepKey.toUpperCase()}!`);
+    }
+
+    // RENDER BẢNG TÁC NGHIỆP VỚI ĐỘNG CƠ PHỤ THUỘC (DEPENDENCY ENGINE)
+    function renderTable() {
+      const tbody = document.getElementById('taskTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const query = (document.getElementById('searchKeyword')?.value || '').toLowerCase();
+      const filterModel = document.getElementById('filterModelSelect')?.value || 'ALL';
+      const filterPhase = document.getElementById('filterPhaseSelect')?.value || 'ALL';
+      const filterDep = document.getElementById('filterDependencySelect')?.value || 'ALL';
+
+      let blockedTotal = 0;
+      state.tasks.forEach(t => {
+        if (checkTaskDependency(t).isBlocked) blockedTotal++;
+      });
+
+      // Update Header Blocked Badge
+      const navBlockedBadge = document.getElementById('navBlockedAlertBadge');
+      const navBlockedCount = document.getElementById('navBlockedCount');
+      if (navBlockedBadge && navBlockedCount) {
+        if (blockedTotal > 0) {
+          navBlockedBadge.classList.remove('hidden');
+          navBlockedCount.innerText = blockedTotal;
+        } else {
+          navBlockedBadge.classList.add('hidden');
+        }
+      }
+
+      const filtered = state.tasks.filter(t => {
+        const matchQ = t.name.toLowerCase().includes(query) || (t.pic || '').toLowerCase().includes(query);
+        const matchM = filterModel === 'ALL' || t.model === filterModel;
+        const matchP = filterPhase === 'ALL' || t.phase === filterPhase;
+        const dep = checkTaskDependency(t);
+        const matchD = filterDep === 'ALL' || (filterDep === 'BLOCKED' && dep.isBlocked) || (filterDep === 'READY' && !dep.isBlocked);
+        return matchQ && matchM && matchP && matchD;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center py-10 text-slate-400">
+              <i class="fa-solid fa-folder-open text-2xl text-slate-600 mb-2 block"></i>
+              <span>Không tìm thấy tài liệu phù hợp với bộ lọc.</span>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const steps = [
+        { key: 'm', label: 'M', title: 'Meeting khởi động' },
+        { key: 'v1', label: 'V1', title: 'Bản thảo Draft V1' },
+        { key: 'tr', label: 'TR', title: 'Team Review nội bộ' },
+        { key: 'cf', label: 'CF', title: 'Check File (Layout/Typo)' },
+        { key: 'vf', label: 'VF', title: 'Version Final hoàn thiện' },
+        { key: 'pm', label: 'PM', title: 'PM & Sếp duyệt' }
+      ];
+
+      filtered.forEach((task, index) => {
+        const dl = calculateTaskDeadline(task);
+        const trainers = extractTrainers(task.pic);
+        const cp = task.checkpoints || {};
+        const dep = checkTaskDependency(task);
+
+        let trainerHtml = '';
+        if (trainers.length === 0) {
+          trainerHtml = `<span class="text-[9.5px] text-slate-500 italic"><i class="fa-regular fa-user mr-1"></i>Chưa gán PIC</span>`;
+        } else {
+          trainerHtml = trainers.map(tr => `
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] ${
+              tr.isLead 
+                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold' 
+                : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20'
+            }">
+              <i class="${tr.isLead ? 'fa-solid fa-crown text-[8.5px] text-amber-400' : 'fa-solid fa-user-group text-[8.5px] text-cyan-400'}"></i>
+              <span>${tr.name}</span>
+              <span class="text-[8px] opacity-75 uppercase">(${tr.role})</span>
+            </span>
+          `).join('');
+        }
+
+        const checkpointHtml = `
+          <div class="flex items-center gap-1 bg-galaxy-950 p-1.5 rounded-xl border border-galaxy-800">
+            ${steps.map(s => `
+              <button onclick="toggleStep(${task.id}, '${s.key}')" title="${s.title}" class="px-2 py-1 rounded text-[9.5px] font-mono font-bold transition cursor-pointer ${
+                cp[s.key]
+                  ? (s.key === 'vf' || s.key === 'pm' ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'bg-cyan-600 text-white')
+                  : 'bg-galaxy-900 text-slate-500 hover:text-slate-300 hover:bg-galaxy-800'
+              }">
+                ${s.label}
+              </button>
+            `).join('')}
+          </div>
+        `;
+
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-galaxy-900/60 transition border-b border-galaxy-800/60 ${dep.isBlocked ? 'bg-rose-950/10' : ''}`;
+        tr.innerHTML = `
+          <td class="py-3 px-3 text-center font-mono text-slate-500 text-xs">${index + 1}</td>
+          <td class="py-3 px-3">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-bold text-white text-xs">${task.name}</span>
+              ${dep.isBlocked ? `
+                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono font-bold">
+                  <i class="fa-solid fa-lock text-[8px]"></i>
+                  <span>Blocked</span>
+                </span>
+              ` : ''}
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5 line-clamp-1" title="${task.desc}">${task.desc}</div>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="text-[9.5px] px-1.5 py-0.2 rounded font-mono ${task.ratio === '9:16' ? 'bg-purple-900/40 text-purple-300 border border-purple-500/30' : (task.ratio === 'Excel' ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-500/30' : 'bg-galaxy-950 text-slate-300 border border-galaxy-800')}">${task.ratio}</span>
+              <span class="text-[9.5px] text-slate-400">${task.format}</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-[9.5px] text-amber-300/80">${task.phase}</span>
+            </div>
+          </td>
+          <td class="py-3 px-2 text-center">
+            <span class="px-2 py-1 rounded-lg bg-galaxy-950 text-cyan-300 border border-galaxy-700 font-mono text-[11px] font-bold inline-block">
+              ${task.model}
+            </span>
+          </td>
+          <td class="py-3 px-3">
+            <div class="space-y-1">
+              <input type="text" value="${task.pic || ''}" onchange="updateTaskProp(${task.id}, 'pic', this.value)" placeholder="Gõ tên Trainer phụ trách..." class="w-full bg-galaxy-950/90 border border-galaxy-700 focus:border-cyan-400 text-xs text-white rounded-lg px-2 py-1 focus:outline-none placeholder:text-slate-600" />
+              <div class="flex flex-wrap items-center gap-1 pt-0.5">
+                ${trainerHtml}
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-3">
+            <div class="text-[10.5px] font-mono text-cyan-300 font-bold mb-0.5">${dl.dateStr}</div>
+            <div class="text-[10px] text-slate-400">${dl.label}</div>
+            <div class="mt-1">
+              ${dl.isComplete ? '<span class="text-emerald-400 text-[10px] font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Đã VF</span>' :
+                (dl.isOverdue ? `<span class="text-rose-400 text-[10px] font-bold animate-pulse"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Trễ ${Math.abs(dl.daysDiff)}d</span>` :
+                `<span class="text-slate-400 text-[10px] font-mono">Còn ${dl.daysDiff}d</span>`)}
+            </div>
+          </td>
+          <td class="py-3 px-3">
+            ${checkpointHtml}
+          </td>
+          <td class="py-3 px-3 text-xs">
+            <div class="font-medium ${dep.isBlocked ? 'text-rose-300 font-bold' : 'text-slate-200'} text-[11px] flex items-center gap-1">
+              ${dep.isBlocked ? '<i class="fa-solid fa-lock text-[10px] text-rose-400"></i>' : '<i class="fa-solid fa-link text-[10px] text-slate-400"></i>'}
+              <span>${task.depLabel}</span>
+            </div>
+            <div class="${dep.isBlocked ? 'text-rose-400 font-bold animate-pulse' : 'text-emerald-400 font-medium'} text-[10px] mt-0.5 flex items-center gap-1">
+              <i class="fa-solid ${dep.isBlocked ? 'fa-triangle-exclamation text-[9px]' : 'fa-check text-[9px]'}"></i>
+              <span>${dep.isBlocked ? `🔒 Blocked: ${dep.reason}` : '✓ Đủ điều kiện'}</span>
+            </div>
+          </td>
+          <td class="py-3 px-3">
+            <div class="flex items-center gap-1.5">
+              <input type="text" value="${task.link || ''}" onchange="updateTaskProp(${task.id}, 'link', this.value)" placeholder="Dán link SharePoint, Drive..." class="w-full bg-galaxy-950/90 border border-galaxy-700 focus:border-cyan-400 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none font-mono text-[11px] transition placeholder:text-slate-600" />
+              ${task.link ? `
+                <a href="${task.link}" target="_blank" title="Mở file" class="w-7 h-7 shrink-0 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 flex items-center justify-center transition">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+              ` : ''}
+            </div>
+          </td>
+          <td class="py-3 px-2 text-center">
+            <button onclick="deleteTaskItem(${task.id})" title="Xóa tài liệu này" class="text-slate-500 hover:text-rose-400 transition p-1.5 rounded-lg hover:bg-galaxy-800 cursor-pointer">
+              <i class="fa-regular fa-trash-can text-xs"></i>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateTaskProp(id, prop, val) {
+      const task = state.tasks.find(t => t.id === id);
+      if (task) {
+        task[prop] = val;
+        saveStateToLocalStorage();
+        renderTable();
+        renderDashboard();
+      }
+    }
+
+    function deleteTaskItem(id) {
+      state.tasks = state.tasks.filter(t => t.id !== id);
+      saveStateToLocalStorage();
+      renderTable();
+      renderDashboard();
+      showToast("Đã xóa tài liệu!");
+    }
+
+    function renderDashboard() {
+      const totalDocs = state.tasks.length || 1;
+      const doneDocs = state.tasks.filter(t => t.checkpoints && (t.checkpoints.vf || t.checkpoints.pm)).length;
+      const blockedDocs = state.tasks.filter(t => checkTaskDependency(t).isBlocked).length;
+
+      const overallPercent = Math.round((doneDocs / totalDocs) * 100);
+
+      const pText = document.getElementById('kpiOverallPercent');
+      const pBar = document.getElementById('kpiOverallBar');
+      const dCount = document.getElementById('kpiDoneCount');
+      
+      const bText = document.getElementById('kpiBlockedCountText');
+      const bDot = document.getElementById('kpiGateDot');
+      const bSub = document.getElementById('kpiGateSubtext');
+
+      if (pText) pText.innerText = `${overallPercent}%`;
+      if (pBar) pBar.style.width = `${overallPercent}%`;
+      if (dCount) dCount.innerText = `${doneDocs} / ${totalDocs} tài liệu`;
+
+      if (bText && bDot && bSub) {
+        if (blockedDocs > 0) {
+          bText.innerText = `${blockedDocs} BLOCKED`;
+          bText.className = "text-xl font-bold text-rose-400 font-mono animate-pulse";
+          bDot.className = "w-2 h-2 rounded-full bg-rose-500 animate-ping";
+          bSub.innerText = "Có tài liệu bị chặn do thiếu điều kiện";
+          bSub.className = "text-[11px] text-rose-300 font-medium";
+        } else {
+          bText.innerText = "0 BLOCKED";
+          bText.className = "text-xl font-bold text-emerald-400 font-mono";
+          bDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+          bSub.innerText = "Tất cả cổng tiên quyết thông luồng";
+          bSub.className = "text-[11px] text-slate-400";
+        }
+      }
+
+      const embDate = new Date(state.deadlines.embargo);
+      const unpDate = new Date(state.deadlines.unpack);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      const daysToEmb = Math.ceil((embDate - today) / (1000 * 60 * 60 * 24));
+      const daysToUnp = Math.ceil((unpDate - today) / (1000 * 60 * 60 * 24));
+
+      const embDateText = document.getElementById('kpiEmbargoDateText');
+      const unpDateText = document.getElementById('kpiUnpackDateText');
+      if (embDateText) embDateText.innerText = isNaN(embDate.getTime()) ? 'N/A' : embDate.toLocaleDateString('vi-VN');
+      if (unpDateText) unpDateText.innerText = isNaN(unpDate.getTime()) ? 'N/A' : unpDate.toLocaleDateString('vi-VN');
+
+      const embBadge = document.getElementById('kpiEmbargoBadge');
+      const unpBadge = document.getElementById('kpiUnpackBadge');
+      if (embBadge) embBadge.innerText = daysToEmb >= 0 ? `Còn ${daysToEmb}d` : `Quá ${Math.abs(daysToEmb)}d`;
+      if (unpBadge) unpBadge.innerText = daysToUnp >= 0 ? `Còn ${daysToUnp}d` : `Quá ${Math.abs(daysToUnp)}d`;
+
+      renderModelStats(totalDocs);
+      renderAdvisor(totalDocs, doneDocs, overallPercent);
+      renderWorkloadSensors();
+    }
+
+    function renderModelStats(totalDocs) {
+      const totalCountText = document.getElementById('modelTotalCountText');
+      if (totalCountText) totalCountText.innerText = `${state.tasks.length} tài liệu`;
+
+      const allGroups = [
+        ...state.models.map(m => ({ code: m.code, name: m.name, color: m.color || 'purple' })),
+        { code: "Chung", name: "Tài liệu Chung", color: "blue" }
+      ];
+
+      const stats = allGroups.map(g => {
+        const groupTasks = state.tasks.filter(t => g.code === 'Chung' ? (t.model === 'Chung' || !t.model) : t.model === g.code);
+        const count = groupTasks.length;
+        const done = groupTasks.filter(t => t.checkpoints && (t.checkpoints.vf || t.checkpoints.pm)).length;
+        const blocked = groupTasks.filter(t => checkTaskDependency(t).isBlocked).length;
+        const percent = count > 0 ? Math.round((done / count) * 100) : 0;
+        const share = Math.round((count / totalDocs) * 100);
+
+        return { ...g, count, done, blocked, percent, share };
+      });
+
+      const distBar = document.getElementById('modelDistributionBar');
+      const distLegend = document.getElementById('modelDistributionLegend');
+      const cardsContainer = document.getElementById('modelCardsContainer');
+
+      const colorMap = {
+        purple: 'bg-purple-500',
+        pink: 'bg-pink-500',
+        amber: 'bg-amber-500',
+        blue: 'bg-blue-500',
+        emerald: 'bg-emerald-500'
+      };
+
+      if (distBar) {
+        distBar.innerHTML = stats.map(s => `
+          <div style="width: ${s.share}%" class="${colorMap[s.color] || 'bg-purple-500'} h-full" title="${s.name}: ${s.count} file (${s.share}%)"></div>
+        `).join('');
+      }
+
+      if (distLegend) {
+        distLegend.innerHTML = stats.map(s => `
+          <span class="inline-flex items-center gap-1 text-[10.5px]">
+            <span class="w-2 h-2 rounded-full ${colorMap[s.color] || 'bg-purple-500'}"></span>
+            <span>${s.code}: <strong>${s.share}%</strong> (${s.count} docs)</span>
+          </span>
+        `).join('');
+      }
+
+      if (cardsContainer) {
+        cardsContainer.innerHTML = stats.map(s => `
+          <div class="p-4 rounded-xl border border-galaxy-800 bg-galaxy-950/70 space-y-2.5">
+            <div class="flex items-start justify-between">
+              <div>
+                <h5 class="font-bold text-white text-xs">${s.name}</h5>
+                <span class="text-[10px] text-slate-400 font-mono">Tỷ trọng: <strong class="text-cyan-300">${s.share}%</strong></span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-mono font-black text-cyan-300">${s.percent}%</span>
+                ${s.blocked > 0 ? `<div class="text-[9px] text-rose-400 font-mono font-bold"><i class="fa-solid fa-lock mr-0.5"></i>${s.blocked} kẹt</div>` : ''}
+              </div>
+            </div>
+            <div class="w-full bg-galaxy-900 h-2 rounded-full overflow-hidden border border-galaxy-800">
+              <div class="${colorMap[s.color] || 'bg-purple-500'} h-full rounded-full" style="width: ${s.percent}%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-400 pt-1">
+              <span>Đã xong: <strong class="text-emerald-400 font-mono">${s.done}/${s.count}</strong></span>
+              <button onclick="quickFilterModel('${s.code}')" class="text-cyan-400 hover:text-cyan-300 font-medium cursor-pointer">Xem bảng →</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function quickFilterModel(modelCode) {
+      switchView('home');
+      const select = document.getElementById('filterModelSelect');
+      if (select) {
+        select.value = modelCode;
+        renderTable();
+      }
+    }
+
+    function renderAdvisor(totalDocs, doneDocs, overallPercent) {
+      const vText = document.getElementById('aiVerdictText');
+      const bText = document.getElementById('aiBottlenecksText');
+      const aText = document.getElementById('aiActionPlanText');
+      const healthBadge = document.getElementById('aiHealthBadge');
+
+      const overdueList = [];
+      const missingPicList = [];
+      const blockedList = [];
+
+      state.tasks.forEach(t => {
+        const dl = calculateTaskDeadline(t);
+        const dep = checkTaskDependency(t);
+
+        if (dep.isBlocked) blockedList.push({ task: t, reason: dep.reason });
+        if (dl.isOverdue) overdueList.push(t);
+        if (!t.pic || !t.pic.trim()) missingPicList.push(t);
+      });
+
+      // Health badge rating
+      if (healthBadge) {
+        if (blockedList.length >= 4 || overdueList.length >= 3) {
+          healthBadge.innerText = "BÁO ĐỘNG ĐỎ";
+          healthBadge.className = "text-[10px] font-bold px-2.5 py-1 rounded-full font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse";
+        } else if (blockedList.length > 0 || overdueList.length > 0) {
+          healthBadge.innerText = "CẦN LƯU Ý";
+          healthBadge.className = "text-[10px] font-bold px-2.5 py-1 rounded-full font-mono bg-amber-500/20 text-amber-300 border border-amber-500/40";
+        } else {
+          healthBadge.innerText = "DỰ ÁN KHẢ QUAN";
+          healthBadge.className = "text-[10px] font-bold px-2.5 py-1 rounded-full font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+        }
+      }
+
+      if (vText) {
+        let verdict = `Chiến dịch gồm <strong>${state.models.length} sản phẩm</strong> (${state.tasks.length} tài liệu). Đã hoàn thành <strong>${doneDocs}/${totalDocs} tài liệu (${overallPercent}%)</strong> đạt mốc VF/PM.`;
+        if (blockedList.length > 0) {
+          verdict += ` <span class="text-rose-300 font-semibold">Hiện có <strong>${blockedList.length} tài liệu đang bị phong tỏa</strong> do các cổng điều kiện đầu vào chưa mở.</span>`;
+        }
+        vText.innerHTML = verdict;
+      }
+
+      if (bText) {
+        const items = [];
+        if (blockedList.length > 0) {
+          const sampleBlocked = blockedList.slice(0, 3).map(b => `<strong>${b.task.name}</strong> (${b.reason})`).join(', ');
+          items.push(`
+            <div class="p-2 bg-rose-950/40 rounded-lg text-rose-200 border border-rose-500/30">
+              <span class="font-bold text-rose-300"><i class="fa-solid fa-lock mr-1"></i>Phong tỏa mắt xích (${blockedList.length} tài liệu):</span>
+              <div class="text-[10.5px] mt-0.5">${sampleBlocked}${blockedList.length > 3 ? ` và ${blockedList.length - 3} tài liệu khác.` : '.'}</div>
+            </div>
+          `);
+        }
+        if (overdueList.length > 0) {
+          items.push(`<div class="p-1.5 bg-rose-950/30 rounded-lg text-rose-200">🚨 Có <strong>${overdueList.length} tài liệu</strong> đã quá hạn cam kết.</div>`);
+        }
+        if (missingPicList.length > 0) {
+          items.push(`<div class="p-1.5 bg-galaxy-900 rounded-lg text-amber-200">⚠️ Có <strong>${missingPicList.length} tài liệu</strong> chưa được gán Trainer phụ trách.</div>`);
+        }
+        bText.innerHTML = items.length > 0 ? items.join('') : '<div class="text-emerald-400 py-1 flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i>Toàn bộ mắt xích tiên quyết thông luồng, không có điểm nghẽn.</div>';
+      }
+
+      if (aText) {
+        const plans = [];
+        if (blockedList.length > 0) {
+          const missingGates = [];
+          if (!state.gates.hq) missingGates.push('Workshop Deck HQ');
+          if (!state.gates.spec) missingGates.push('Thông số chính thức');
+          if (!state.gates.mkt) missingGates.push('MKT Term Final');
+          if (!state.gates.sample) missingGates.push('Sample máy vật lý');
+          plans.push(`<div class="text-rose-300"><span class="px-1.5 py-0.2 rounded bg-rose-500 text-slate-950 font-bold text-[9px] mr-1">P0</span> Ưu tiên giục HQ Suwon & MKT mở cổng: <strong>${missingGates.join(', ')}</strong> để giải phóng ${blockedList.length} task.</div>`);
+        }
+        if (missingPicList.length > 0) {
+          plans.push(`<div><span class="px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 font-bold text-[9px] mr-1">P1</span> Phân bổ Lead Trainer phụ trách cho các đầu mục còn trống.</div>`);
+        }
+        plans.push(`<div class="text-emerald-300"><span class="px-1.5 py-0.2 rounded bg-emerald-400 text-slate-950 font-bold text-[9px] mr-1">P2</span> Đôn đốc hoàn thiện bản thảo Draft V1 và Check File định kỳ.</div>`);
+        aText.innerHTML = plans.join('');
+      }
+    }
+
+    function renderWorkloadSensors() {
+      const grid = document.getElementById('trainerCardsGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const trainerMap = {};
+      state.tasks.forEach(t => {
+        const list = extractTrainers(t.pic);
+        const dl = calculateTaskDeadline(t);
+        const dep = checkTaskDependency(t);
+
+        list.forEach(tr => {
+          if (!trainerMap[tr.name]) {
+            trainerMap[tr.name] = { name: tr.name, total: 0, done: 0, overdue: 0, blocked: 0, score: 0 };
+          }
+          trainerMap[tr.name].total++;
+          if (dl.isComplete) trainerMap[tr.name].done++;
+          else {
+            if (dl.isOverdue) trainerMap[tr.name].overdue++;
+            if (dep.isBlocked) trainerMap[tr.name].blocked++;
+            const weight = t.format === 'Video' ? 3.0 : 1.0;
+            trainerMap[tr.name].score += tr.isLead ? weight * 0.65 : weight * 0.35;
+          }
+        });
+      });
+
+      const trainers = Object.values(trainerMap);
+      let ov = 0, hv = 0, op = 0;
+
+      if (trainers.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-6 text-slate-500 italic bg-galaxy-950/40 rounded-xl border border-galaxy-800">Chưa có Trainer nào được phân công. Hãy gõ tên Trainer ở Bảng Tác Nghiệp để đo tải tự động.</div>';
+      }
+
+      trainers.forEach(tr => {
+        let status = '🟢 Tối ưu';
+        let badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+
+        if (tr.overdue > 0 || tr.score >= 3.5) {
+          status = '🔴 QUÁ TẢI';
+          badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse';
+          ov++;
+        } else if (tr.score >= 2.0 || tr.blocked >= 2) {
+          status = '🟡 Tải cao';
+          badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+          hv++;
+        } else {
+          op++;
+        }
+
+        const card = document.createElement('div');
+        card.className = "p-3.5 rounded-xl border border-galaxy-800 bg-galaxy-950/70 text-xs space-y-2";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <h5 class="font-bold text-white">${tr.name}</h5>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border font-mono ${badgeClass}">${status}</span>
+          </div>
+          <div class="flex justify-between text-[10.5px] text-slate-400">
+            <span>Khối lượng: <strong class="text-white">${tr.total} việc</strong></span>
+            <span>Điểm tải: <strong class="text-cyan-300 font-mono">${tr.score.toFixed(1)}</strong></span>
+          </div>
+          <div class="flex justify-between text-[10px]">
+            <span class="text-emerald-400 font-medium">${tr.done}/${tr.total} hoàn thành</span>
+            ${tr.blocked > 0 ? `<span class="text-rose-400 font-mono font-bold"><i class="fa-solid fa-lock mr-0.5"></i>${tr.blocked} kẹt</span>` : ''}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      const elOv = document.getElementById('countOverload');
+      const elHv = document.getElementById('countHeavy');
+      const elOp = document.getElementById('countOptimal');
+      if (elOv) elOv.innerText = ov;
+      if (elHv) elHv.innerText = hv;
+      if (elOp) elOp.innerText = op;
+    }
+
+    // CẬP NHẬT CỔNG TIÊN QUYẾT & LIÊN KẾT TỨC THÌ SANG TOÀN BỘ BẢNG TÁC NGHIỆP
+    function updateGateBadgeUI(key, checked) {
+      const tag = document.getElementById(`gate_tag_${key}`);
+      if (tag) {
+        tag.innerText = checked ? 'Đã có' : 'Chưa có';
+        tag.className = checked 
+          ? 'text-[9.5px] px-2 py-0.5 rounded font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold' 
+          : 'text-[9.5px] px-2 py-0.5 rounded font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold animate-pulse';
+      }
+    }
+
+    function toggleGate(key, checked) {
+      state.gates[key] = checked;
+      updateGateBadgeUI(key, checked);
+      
+      saveStateToLocalStorage();
+      // Đồng bộ ngay lập tức sang Bảng tác nghiệp Trang chủ và Dashboard
+      renderTable();
+      renderDashboard();
+
+      const gateNames = {
+        hq: 'Workshop Deck HQ',
+        spec: 'Thông số chính thức',
+        mkt: 'MKT Term Final',
+        sample: 'Máy mẫu vật lý (Sample)'
+      };
+
+      if (checked) {
+        showToast(`✓ Đã mở cổng [${gateNames[key] || key}]: Các tài liệu liên quan đã được thông luồng!`);
+      } else {
+        showToast(`🔒 Đã tắt cổng [${gateNames[key] || key}]: Các tài liệu liên quan ở Trang chủ đã bị khóa Blocked!`);
+      }
+    }
+
+    function switchView(tabKey) {
+      state.currentView = tabKey;
+      const btnH = document.getElementById('tabBtnHome');
+      const btnD = document.getElementById('tabBtnDash');
+      const viewH = document.getElementById('viewHome');
+      const viewD = document.getElementById('viewDashboard');
+
+      if (tabKey === 'home') {
+        if (btnH) btnH.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-md cursor-pointer";
+        if (btnD) btnD.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all cursor-pointer";
+        if (viewH) viewH.classList.remove('hidden');
+        if (viewD) viewD.classList.add('hidden');
+        renderTable();
+      } else {
+        if (btnD) btnD.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-md cursor-pointer";
+        if (btnH) btnH.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all cursor-pointer";
+        if (viewD) viewD.classList.remove('hidden');
+        if (viewH) viewH.classList.add('hidden');
+        renderDashboard();
+      }
+    }
+
+    function resetDefaultData() {
+      localStorage.removeItem(STORAGE_KEY);
+      state.projectName = "CHIẾN DỊCH FLAGSHIP GALAXY";
+      state.models = JSON.parse(JSON.stringify(DEFAULT_MODELS));
+      state.deadlines.embargo = formatFutureDate(14);
+      state.deadlines.unpack = formatFutureDate(35);
+      state.gates = { hq: true, spec: true, mkt: true, sample: true };
+      generateTasksFromModelList();
+      saveStateToLocalStorage();
+      initApp();
+      showToast("Đã khôi phục dữ liệu mẫu chuẩn!");
+    }
+
+    // =========================================================================
+    // CÁC CHỨC NĂNG XUẤT / NẠP DỮ LIỆU CHO TEAM (DATA SYNC)
+    // =========================================================================
+    
+    // 1. Xuất file dữ liệu JSON siêu nhẹ
+    function exportDataJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const safeProjectName = (state.projectName || "PROTASK").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const fileName = `${safeProjectName}_DATA_${new Date().toISOString().split('T')[0]}.json`;
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", fileName);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast(`📁 Đã xuất file ${fileName}! Bạn có thể gửi file này cho thành viên khác.`);
+    }
+
+    // 2. Kích hoạt chọn file JSON để nạp
+    function triggerImportJson() {
+      const fileInput = document.getElementById('importJsonFileInput');
+      if (fileInput) fileInput.click();
+    }
+
+    // 3. Xử lý đọc file JSON và cập nhật State
+    function handleImportJson(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedState = JSON.parse(e.target.result);
+          if (importedState && importedState.projectName && Array.isArray(importedState.tasks)) {
+            state = importedState;
+            saveStateToLocalStorage();
+            initApp();
+            showToast(`✅ Đã nạp thành công dữ liệu từ file: ${file.name}`);
+          } else {
+            showToast("❌ File JSON không đúng định dạng của PROTASK TRACKING!");
+          }
+        } catch (err) {
+          showToast("❌ Lỗi khi đọc file dữ liệu!");
+          console.error(err);
+        }
+        event.target.value = ""; // Reset input
+      };
+      reader.readAsText(file);
+    }
+
+    // 4. Lưu thành file HTML tự hành mới chứa sẵn toàn bộ Data vừa nhập
+    function exportSelfContainedHtml() {
+      saveStateToLocalStorage();
+      // Lấy toàn bộ mã HTML của trang hiện tại
+      let htmlContent = document.documentElement.outerHTML;
+      
+      // Nhúng sẵn state hiện tại vào biến khởi tạo mặc định trong mã nguồn
+      const stateRegex = /let state = \{[\s\S]*?\};\n/;
+      const embeddedStateStr = `let state = ${JSON.stringify(state, null, 2)};\n`;
+      htmlContent = "<!DOCTYPE html>\n<html lang=\"vi\">\n" + document.documentElement.innerHTML + "\n</html>";
+
+      const safeProjectName = (state.projectName || "PROTASK").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const fileName = `${safeProjectName}_TRACKING_SAVED.html`;
+      
+      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = URL.createObjectURL(blob);
+      downloadAnchor.download = fileName;
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast(`💾 Đã tạo file ${fileName}! File này mở ra sẽ có sẵn toàn bộ dữ liệu bạn đã nhập.`);
+    }
+
+    function openPdfModal() {
+      const modal = document.getElementById('pdfModal');
+      const area = document.getElementById('pdfContentArea');
+      if (modal) modal.classList.remove('hidden');
+      if (!area) return;
+
+      const total = state.tasks.length || 1;
+      const done = state.tasks.filter(t => t.checkpoints && (t.checkpoints.vf || t.checkpoints.pm)).length;
+      const blocked = state.tasks.filter(t => checkTaskDependency(t).isBlocked).length;
+      const percent = Math.round((done / total) * 100);
+
+      const rows = state.tasks.map((t, i) => {
+        const dl = calculateTaskDeadline(t);
+        const dep = checkTaskDependency(t);
+        const cp = t.checkpoints || {};
+        const cpText = cp.pm ? '✅ PM duyệt' : (cp.vf ? '✨ Ver Final' : (cp.cf ? '🔍 Check File' : (cp.tr ? '👥 Team Review' : 'Draft V1')));
+        return `
+          <tr class="border-b border-slate-200 text-[10px] ${dep.isBlocked ? 'bg-red-50' : ''}">
+            <td class="py-1.5 px-2 text-center font-mono">${i + 1}</td>
+            <td class="py-1.5 px-2 font-bold">
+              ${t.name} <span class="text-purple-700">[${t.model}]</span>
+              ${dep.isBlocked ? '<span class="text-red-600 font-bold ml-1">[🔒 BLOCKED]</span>' : ''}
+            </td>
+            <td class="py-1.5 px-2">${t.phase}</td>
+            <td class="py-1.5 px-2">${t.pic || 'Chưa gán'}</td>
+            <td class="py-1.5 px-2 font-mono">${dl.dateStr}</td>
+            <td class="py-1.5 px-2 font-semibold ${dep.isBlocked ? 'text-red-600' : 'text-emerald-700'}">
+              ${dep.isBlocked ? `🔒 ${dep.reason}` : cpText}
+            </td>
+            <td class="py-1.5 px-2 text-[9px] truncate max-w-[120px] font-mono">${t.link || '-'}</td>
+          </tr>
+        `;
+      }).join('');
+
+      area.innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-3 flex justify-between items-start">
+          <div>
+            <span class="text-xs font-black tracking-widest text-blue-600 font-mono">PROTASK TRACKING SYSTEM</span>
+            <h1 class="text-xl font-black text-slate-950 uppercase mt-1">${state.projectName}</h1>
+            <p class="text-xs text-slate-600">Báo cáo tiến độ chiến dịch ra mắt ${state.models.length} sản phẩm</p>
+          </div>
+          <div class="text-right text-xs">
+            <div class="font-bold text-slate-800">Ngày lập: ${new Date().toLocaleDateString('vi-VN')}</div>
+            <div class="text-slate-600">Embargo: <strong>${new Date(state.deadlines.embargo).toLocaleDateString('vi-VN')}</strong></div>
+            <div class="text-slate-600">Unpack: <strong>${new Date(state.deadlines.unpack).toLocaleDateString('vi-VN')}</strong></div>
+          </div>
+        </div>
+
+        <div class="text-xs font-bold text-slate-700 uppercase py-1 flex justify-between">
+          <span>Tiến độ toàn chiến dịch: ${percent}% (${done}/${total} tài liệu hoàn thành)</span>
+          <span class="${blocked > 0 ? 'text-red-600 font-bold' : 'text-emerald-700'}">Tình trạng: ${blocked > 0 ? `${blocked} tài liệu bị khóa (Blocked)` : 'Đủ điều kiện thông luồng'}</span>
+        </div>
+
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-800 text-white text-[9.5px] uppercase font-bold">
+              <th class="py-1.5 px-2 text-center">STT</th>
+              <th class="py-1.5 px-2">Tài liệu & Model</th>
+              <th class="py-1.5 px-2">Giai đoạn</th>
+              <th class="py-1.5 px-2">Trainer phụ trách</th>
+              <th class="py-1.5 px-2">Hạn chót</th>
+              <th class="py-1.5 px-2">Tình trạng / Nấc duyệt</th>
+              <th class="py-1.5 px-2">Link chuẩn</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+
+        <div class="pt-8 grid grid-cols-2 text-center text-xs">
+          <div>
+            <div class="font-bold text-slate-800">TRƯỞNG NHÓM ĐIỀU PHỐI (PIC)</div>
+            <div class="h-12"></div>
+            <div class="font-bold text-slate-900 border-t border-slate-300 inline-block px-8 pt-1">Xác nhận</div>
+          </div>
+          <div>
+            <div class="font-bold text-slate-800">PRODUCT MANAGER (PM)</div>
+            <div class="h-12"></div>
+            <div class="font-bold text-slate-900 border-t border-slate-300 inline-block px-8 pt-1">Phê duyệt</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function closePdfModal() {
+      const modal = document.getElementById('pdfModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openAddTaskModal() {
+      const modal = document.getElementById('addTaskModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeAddTaskModal() {
+      const modal = document.getElementById('addTaskModal');
+      if (modal) modal.classList.add('hidden');
+    }
+    function saveModalTask() {
+      const name = document.getElementById('modal_taskName')?.value.trim();
+      if (!name) {
+        showToast("Vui lòng nhập tên tài liệu!");
+        return;
+      }
+
+      const depGate = document.getElementById('modal_taskDepGate')?.value || 'none';
+      const gateLabels = {
+        hq: 'Workshop Deck HQ',
+        spec: 'Thông số chính thức',
+        mkt: 'MKT Term Final',
+        sample: 'Máy mẫu vật lý (Sample)',
+        none: 'Không có phụ thuộc'
+      };
+
+      state.tasks.push({
+        id: Date.now(),
+        name,
+        model: document.getElementById('modal_taskModel')?.value || 'Chung',
+        format: document.getElementById('modal_taskFormat')?.value || 'Power Point',
+        ratio: "16:9",
+        phase: document.getElementById('modal_taskPhase')?.value || 'Embargo',
+        desc: "Tài liệu bổ sung",
+        formula: 'embargo_m7',
+        pic: document.getElementById('modal_taskPic')?.value.trim() || '',
+        checkpoints: { m: true, v1: false, tr: false, cf: false, vf: false, pm: false },
+        depGate: depGate,
+        depLabel: gateLabels[depGate] || 'Không có phụ thuộc',
+        link: ""
+      });
+
+      renderTable();
+      renderDashboard();
+      closeAddTaskModal();
+      showToast("Đã thêm tài liệu mới!");
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initApp();
+    });
+    window.onload = function() {
+      initApp();
+    };
+  </script>
+</body>
+</html>
