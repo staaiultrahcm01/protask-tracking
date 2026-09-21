@@ -65,7 +65,7 @@
 
   <main class="max-w-7xl mx-auto p-6 w-full flex-1 space-y-6">
 
-    <!-- KHỐI 4 BƯỚC KHỞI TẠO -->
+    <!-- KHỐI 4 BƯỚC KHỞI TẠO (CHỈ HIỆN Ở TRANG CHỦ HOẶC KHI CẦN SỬA) -->
     <div id="setupBlock" class="glass-panel rounded-2xl p-6 border border-cyan-500/20 relative shadow-2xl">
       <div class="flex items-center justify-between mb-5 border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
@@ -132,7 +132,7 @@
       </button>
     </div>
 
-    <!-- BẢNG TÁC NGHIỆP -->
+    <!-- NỘI DUNG TAB TRANG CHỦ (BẢNG TÁC NGHIỆP) -->
     <div id="homeTab" class="space-y-4">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <h3 class="text-sm font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
@@ -168,26 +168,98 @@
       </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- NỘI DUNG TAB DASHBOARD (ĐẦY ĐỦ TỶ TRỌNG, CỔNG TIÊN QUYẾT, ADVISOR, WORKLOAD) -->
     <div id="dashTab" class="hidden space-y-6">
+      
+      <!-- 4 THẺ KPI ĐẦU TRANG -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-panel p-4 rounded-xl border border-slate-800">
+        <div class="glass-panel p-4 rounded-xl border border-slate-800 shadow-lg">
           <span class="text-xs text-slate-400 font-semibold">Tiến Độ Tổng Thể</span>
           <div class="text-2xl font-black text-cyan-400 mt-1" id="kpiProgress">0%</div>
         </div>
-        <div class="glass-panel p-4 rounded-xl border border-slate-800">
+        <div class="glass-panel p-4 rounded-xl border border-slate-800 shadow-lg">
           <span class="text-xs text-slate-400 font-semibold">Đã Có Link Nộp</span>
           <div class="text-2xl font-black text-emerald-400 mt-1" id="kpiLinks">0/0</div>
         </div>
-        <div class="glass-panel p-4 rounded-xl border border-slate-800">
+        <div class="glass-panel p-4 rounded-xl border border-slate-800 shadow-lg">
           <span class="text-xs text-slate-400 font-semibold">Đếm Ngược Embargo</span>
           <div class="text-xl font-black text-amber-400 mt-1" id="kpiEmbargo">-- ngày</div>
         </div>
-        <div class="glass-panel p-4 rounded-xl border border-slate-800">
+        <div class="glass-panel p-4 rounded-xl border border-slate-800 shadow-lg">
           <span class="text-xs text-slate-400 font-semibold">Đếm Ngược Unpack</span>
           <div class="text-xl font-black text-purple-400 mt-1" id="kpiUnpack">-- ngày</div>
         </div>
       </div>
+
+      <!-- 1. TỶ TRỌNG VÀ TIẾN ĐỘ THEO DÒNG SẢN PHẨM -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-cyan-400"></i> Ma Trận Tỷ Trọng & Tiến Độ Từng Dòng Máy
+          </h3>
+          <span class="text-[11px] text-slate-400 font-mono" id="totalTasksCountLabel">Tổng: 0 tài liệu</span>
+        </div>
+        
+        <!-- Thanh Ratio Bar chia tỷ lệ sản phẩm -->
+        <div id="productRatioBar" class="w-full h-3 bg-slate-900 rounded-full overflow-hidden flex p-0.5 border border-slate-800"></div>
+
+        <!-- Danh sách thẻ chi tiết từng sản phẩm -->
+        <div id="productCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5"></div>
+      </div>
+
+      <!-- 2. CỔNG TIÊN QUYẾT & RC TASK ADVISOR -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- CỔNG TIÊN QUYẾT HQ/SAMPLE -->
+        <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-amber-400"></i> Cổng Tiên Quyết
+            </h3>
+            <span class="text-[10px] text-slate-400">Bấm để Bật/Tắt</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 cursor-pointer hover:border-slate-700">
+              <span class="font-medium text-slate-200"><i class="fa-solid fa-book text-cyan-400 mr-2"></i>Workshop Deck HQ</span>
+              <input type="checkbox" id="gate_hq" onchange="toggleGate('hq', this.checked)" class="w-4 h-4 rounded text-cyan-500">
+            </label>
+            <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 cursor-pointer hover:border-slate-700">
+              <span class="font-medium text-slate-200"><i class="fa-solid fa-table-cells text-blue-400 mr-2"></i>Thông Số Kỹ Thuật (Spec)</span>
+              <input type="checkbox" id="gate_spec" onchange="toggleGate('spec', this.checked)" class="w-4 h-4 rounded text-cyan-500">
+            </label>
+            <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 cursor-pointer hover:border-slate-700">
+              <span class="font-medium text-slate-200"><i class="fa-solid fa-bullhorn text-purple-400 mr-2"></i>MKT Term Final</span>
+              <input type="checkbox" id="gate_mkt" onchange="toggleGate('mkt', this.checked)" class="w-4 h-4 rounded text-cyan-500">
+            </label>
+            <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 cursor-pointer hover:border-slate-700">
+              <span class="font-medium text-slate-200"><i class="fa-solid fa-mobile-screen-button text-emerald-400 mr-2"></i>Máy Mẫu Thực Tế (Sample)</span>
+              <input type="checkbox" id="gate_sample" onchange="toggleGate('sample', this.checked)" class="w-4 h-4 rounded text-cyan-500">
+            </label>
+          </div>
+        </div>
+
+        <!-- RC TASK ADVISOR (CHỈ ĐIỂM RỦI RO THỜI GIAN THỰC) -->
+        <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-slate-800 space-y-3.5 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> RC Task Advisor (Phát Hiện Rủi Ro)
+            </h3>
+            <span id="advisorHealthStatus" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">BÌNH THƯỜNG</span>
+          </div>
+          <div id="advisorContent" class="space-y-2 text-xs"></div>
+        </div>
+      </div>
+
+      <!-- 3. CẢM BIẾN TẢI CÔNG VIỆC CỦA 25 TRAINER (WORKLOAD SENSOR) -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
+            <i class="fa-solid fa-users-gear text-emerald-400"></i> Cảm Biến Tải Công Việc Trainer (Workload Sensor)
+          </h3>
+          <span class="text-[10px] text-slate-400 italic">👑 Lead gánh 65% tải • 🤝 Support gánh 35% tải</span>
+        </div>
+        <div id="workloadGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+      </div>
+
     </div>
 
   </main>
@@ -195,33 +267,12 @@
   <script>
     const STORAGE_KEY = 'PROTASK_TRACKING_MASTER_DATA';
 
-    // DANH SÁCH 25 TRAINER CHÍNH THỨC
     const OFFICIAL_TRAINER_LIST = [
-      'Nguyễn Việt Dũng',
-      'Nguyễn Thị Mến',
-      'Nguyễn Thị Hoa',
-      'Kim Thị Hải Nhi',
-      'Hoàng Anh Tú',
-      'Nguyễn Trung Kiên',
-      'Kiều Minh Trâm',
-      'Phạm Thế Duyệt',
-      'Phạm Trường Sơn',
-      'Nguyễn Diễm Bảo Thi',
-      'Trương Minh Nhất Linh',
-      'Nguyễn Sỹ Chức',
-      'Bùi Thị Thanh Hằng',
-      'Đặng Hoàng Nam',
-      'Trần Anh Dũng',
-      'Võ Quốc Thiện',
-      'Nguyễn Tiến Phương Nam',
-      'Nguyễn Thảo Vy',
-      'Hồ Hoàng Thanh',
-      'Nguyễn Thành Đạt',
-      'Cao Thị Thu Hà',
-      'Nguyễn Hà Ngọc Thắng',
-      'Phan Tấn Đạt',
-      'Võ Minh Thành',
-      'Huỳnh Thị Cẩm Vil'
+      'Nguyễn Việt Dũng', 'Nguyễn Thị Mến', 'Nguyễn Thị Hoa', 'Kim Thị Hải Nhi', 'Hoàng Anh Tú',
+      'Nguyễn Trung Kiên', 'Kiều Minh Trâm', 'Phạm Thế Duyệt', 'Phạm Trường Sơn', 'Nguyễn Diễm Bảo Thi',
+      'Trương Minh Nhất Linh', 'Nguyễn Sỹ Chức', 'Bùi Thị Thanh Hằng', 'Đặng Hoàng Nam', 'Trần Anh Dũng',
+      'Võ Quốc Thiện', 'Nguyễn Tiến Phương Nam', 'Nguyễn Thảo Vy', 'Hồ Hoàng Thanh', 'Nguyễn Thành Đạt',
+      'Cao Thị Thu Hà', 'Nguyễn Hà Ngọc Thắng', 'Phan Tấn Đạt', 'Võ Minh Thành', 'Huỳnh Thị Cẩm Vil'
     ];
 
     let appState = {
@@ -230,6 +281,7 @@
       dateUnpack: '2026-10-26',
       products: ['Galaxy Z Fold', 'Galaxy Z Flip'],
       trainers: [...OFFICIAL_TRAINER_LIST],
+      gates: { hq: true, spec: true, mkt: true, sample: false },
       tasks: []
     };
 
@@ -255,8 +307,8 @@
       if (saved) {
         try {
           appState = JSON.parse(saved);
-          // Luôn đồng bộ 25 Trainer chuẩn xác nhất
           appState.trainers = [...OFFICIAL_TRAINER_LIST];
+          if (!appState.gates) appState.gates = { hq: true, spec: true, mkt: true, sample: false };
         } catch (e) {
           console.error(e);
         }
@@ -267,6 +319,12 @@
       document.getElementById('projectNameInput').value = appState.projectName;
       document.getElementById('dateEmbargoInput').value = appState.dateEmbargo;
       document.getElementById('dateUnpackInput').value = appState.dateUnpack;
+
+      // Đồng bộ checkbox cổng
+      document.getElementById('gate_hq').checked = appState.gates.hq;
+      document.getElementById('gate_spec').checked = appState.gates.spec;
+      document.getElementById('gate_mkt').checked = appState.gates.mkt;
+      document.getElementById('gate_sample').checked = appState.gates.sample;
       
       updateProductChips();
       renderTaskTable();
@@ -356,7 +414,23 @@
       return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     }
 
-    // HIỂN THỊ THẺ TRAINER ĐƯỢC CHỌN
+    function checkTaskDependency(task) {
+      if (!task.depGate) return { ok: true, msg: 'Đủ điều kiện' };
+      const gateOpen = appState.gates[task.depGate];
+      if (!gateOpen) {
+        const gateNames = { hq: 'Workshop Deck HQ', spec: 'Thông số Spec', mkt: 'MKT Term Final', sample: 'Máy Mẫu Sample' };
+        return { ok: false, msg: `Chờ ${gateNames[task.depGate] || task.depGate}` };
+      }
+      return { ok: true, msg: 'Đủ điều kiện' };
+    }
+
+    function toggleGate(gateKey, val) {
+      appState.gates[gateKey] = val;
+      renderTaskTable();
+      updateDashboard();
+      saveProjectData(false);
+    }
+
     function renderTrainerTags(trainers) {
       if (!trainers || trainers.length === 0) {
         return '<span class="text-slate-500 italic text-[11px]">Bấm để chọn Trainer...</span>';
@@ -377,12 +451,12 @@
       const query = (document.getElementById('tableSearch')?.value || '').toLowerCase();
 
       appState.tasks.forEach((t, i) => {
-        if (!t.trainers) {
-          t.trainers = t.trainer ? [t.trainer] : [];
-        }
+        if (!t.trainers) t.trainers = t.trainer ? [t.trainer] : [];
 
         const trainerStr = t.trainers.join(' ');
         if (query && !t.name.toLowerCase().includes(query) && !trainerStr.toLowerCase().includes(query)) return;
+
+        const dep = checkTaskDependency(t);
 
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-800/40 transition-all';
@@ -390,19 +464,18 @@
           <td class="py-2.5 px-3 text-center text-slate-500">${i + 1}</td>
           <td class="py-2.5 px-4 font-semibold text-white">
             ${t.name}
+            ${!dep.ok ? '<span class="ml-1.5 px-1.5 py-0.2 rounded text-[9px] bg-rose-950 text-rose-400 border border-rose-800/60 animate-pulse">🔒 BLOCKED</span>' : ''}
             <span class="block text-[10px] text-slate-400 font-normal">${t.format}</span>
           </td>
           <td class="py-2.5 px-3">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.product === 'Chung' ? 'bg-slate-800 text-slate-300' : 'bg-purple-950 text-purple-300 border border-purple-800/60'}">${t.product}</span>
           </td>
           <td class="py-2.5 px-3 relative">
-            <!-- Ô BẤM ĐỂ CHỌN TRAINER -->
             <div onclick="toggleTrainerDropdown(${i}, event)" class="cursor-pointer min-h-[34px] bg-slate-900 border border-slate-700 hover:border-cyan-500/60 rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-1 flex-wrap">
               <div class="flex items-center gap-1 flex-wrap">${renderTrainerTags(t.trainers)}</div>
               <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
             </div>
 
-            <!-- MENU XỔ XUỐNG DANH SÁCH 25 TRAINER -->
             <div id="trainerDropdown_${i}" class="hidden absolute left-3 top-full mt-1 z-50 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2.5 space-y-2">
               <div class="flex items-center justify-between pb-1.5 border-b border-slate-800">
                 <span class="text-[11px] font-bold text-slate-300">25 Trainer (Người 1 là Lead)</span>
@@ -424,8 +497,11 @@
               `).join('')}
             </div>
           </td>
-          <td class="py-2.5 px-3 text-slate-400 text-[11px]">
-            <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800/50">Đủ điều kiện</span>
+          <td class="py-2.5 px-3 text-[11px]">
+            ${dep.ok ? 
+              '<span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800/50">Đủ điều kiện</span>' : 
+              `<span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-950 text-rose-300 border border-rose-800/50">🔒 ${dep.msg}</span>`
+            }
           </td>
           <td class="py-2.5 px-4">
             <input type="text" value="${t.link || ''}" onchange="updateTaskLink(${i}, this.value)" placeholder="Dán link SharePoint/Drive..." class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none">
@@ -438,7 +514,6 @@
       });
     }
 
-    // TẠO CHECKBOX VỚI TÌM KIẾM THÔNG MINH
     function renderTrainerCheckboxes(taskIdx, selectedTrainers, filterText = '') {
       const cleanFilter = removeAccents(filterText.toLowerCase().trim());
       return appState.trainers
@@ -492,7 +567,6 @@
       renderTaskTable();
       saveProjectData(false);
 
-      // Mở lại dropdown của hàng vừa thao tác
       setTimeout(() => {
         const dd = document.getElementById(`trainerDropdown_${taskIdx}`);
         if (dd) dd.classList.remove('hidden');
@@ -536,12 +610,16 @@
     }
 
     function switchTab(tab) {
+      const setupBlock = document.getElementById('setupBlock');
       if (tab === 'home') {
+        setupBlock.classList.remove('hidden');
         document.getElementById('homeTab').classList.remove('hidden');
         document.getElementById('dashTab').classList.add('hidden');
         document.getElementById('navHome').className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-md';
         document.getElementById('navDash').className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all';
       } else {
+        // Vào Dashboard thì ẩn khối setup để tối ưu tầm nhìn
+        setupBlock.classList.add('hidden');
         document.getElementById('homeTab').classList.add('hidden');
         document.getElementById('dashTab').classList.remove('hidden');
         document.getElementById('navDash').className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-cyan-500 text-slate-950 shadow-md';
@@ -568,6 +646,179 @@
         const diff = Math.ceil((new Date(appState.dateUnpack) - now) / (1000 * 60 * 60 * 24));
         document.getElementById('kpiUnpack').textContent = `${diff} ngày`;
       }
+
+      document.getElementById('totalTasksCountLabel').textContent = `Tổng: ${total} tài liệu`;
+
+      // 1. VẼ RATIO BAR & THẺ TỶ TRỌNG THEO SẢN PHẨM
+      renderProductRatioAndCards(total);
+
+      // 2. RC TASK ADVISOR (PHÂN TÍCH RỦI RO THỜI GIAN THỰC)
+      renderRCTaskAdvisor(total);
+
+      // 3. WORKLOAD SENSOR (ĐO TẢI 25 TRAINER)
+      renderTrainerWorkloadSensor();
+    }
+
+    function renderProductRatioAndCards(total) {
+      const ratioBar = document.getElementById('productRatioBar');
+      const cardsContainer = document.getElementById('productCardsContainer');
+      ratioBar.innerHTML = '';
+      cardsContainer.innerHTML = '';
+
+      const allGroups = ['Chung', ...appState.products];
+      const colors = ['#64748b', '#06b6d4', '#a855f7', '#ec4899', '#3b82f6', '#10b981'];
+
+      allGroups.forEach((groupName, idx) => {
+        const groupTasks = appState.tasks.filter(t => t.product === groupName);
+        const count = groupTasks.length;
+        const pct = Math.round((count / total) * 100) || 0;
+        const doneCount = groupTasks.filter(t => t.status === 'VF' || t.status === 'PM').length;
+        const donePct = count > 0 ? Math.round((doneCount / count) * 100) : 0;
+        const color = colors[idx % colors.length];
+
+        // Đoạn trên Ratio Bar
+        const segment = document.createElement('div');
+        segment.style.width = `${pct}%`;
+        segment.style.backgroundColor = color;
+        segment.className = 'h-full rounded-full transition-all';
+        segment.title = `${groupName}: ${count} file (${pct}%)`;
+        ratioBar.appendChild(segment);
+
+        // Thẻ Card
+        const card = document.createElement('div');
+        card.className = 'p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between space-y-2';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs text-white flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
+              ${groupName}
+            </span>
+            <span class="text-[10px] text-slate-400 font-mono">${pct}% tỷ trọng</span>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-[11px] mb-1">
+              <span class="text-slate-400">${doneCount}/${count} file chốt</span>
+              <span class="font-bold text-cyan-400">${donePct}%</span>
+            </div>
+            <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full bg-cyan-400 rounded-full transition-all" style="width: ${donePct}%"></div>
+            </div>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    function renderRCTaskAdvisor(total) {
+      const advisorContent = document.getElementById('advisorContent');
+      const healthBadge = document.getElementById('advisorHealthStatus');
+      advisorContent.innerHTML = '';
+
+      let blockedTasks = [];
+      let unassignedTasks = [];
+
+      appState.tasks.forEach(t => {
+        const dep = checkTaskDependency(t);
+        if (!dep.ok) blockedTasks.push({ task: t, reason: dep.msg });
+        if (!t.trainers || t.trainers.length === 0) unassignedTasks.push(t);
+      });
+
+      if (blockedTasks.length === 0 && unassignedTasks.length === 0) {
+        healthBadge.textContent = 'BÌNH THƯỜNG';
+        healthBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60';
+        advisorContent.innerHTML = `
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center gap-3">
+            <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+            <div>
+              <span class="font-bold text-slate-200">Tiến độ vận hành thông suốt</span>
+              <p class="text-[11px] text-slate-400 mt-0.5">Tất cả tài liệu đều đã gán PIC phụ trách và không có cổng tiên quyết nào bị nghẽn.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      healthBadge.textContent = 'CÓ RỦI RO';
+      healthBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-400 border border-rose-800/60 animate-pulse';
+
+      if (blockedTasks.length > 0) {
+        advisorContent.innerHTML += `
+          <div class="p-2.5 bg-rose-950/40 border border-rose-800/50 rounded-xl flex items-start gap-2.5">
+            <i class="fa-solid fa-lock text-rose-400 mt-0.5"></i>
+            <div>
+              <strong class="text-rose-300 font-bold block mb-0.5">Phát hiện ${blockedTasks.length} tài liệu đang bị khóa (Blocked):</strong>
+              <div class="text-[11px] text-slate-300 space-y-0.5">
+                ${blockedTasks.slice(0, 3).map(b => `• <strong>${b.task.name}</strong>:${b.reason}`).join('<br>')}
+                ${blockedTasks.length > 3 ? `<span class="italic text-slate-400">... và ${blockedTasks.length - 3} file khác</span>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (unassignedTasks.length > 0) {
+        advisorContent.innerHTML += `
+          <div class="p-2.5 bg-amber-950/40 border border-amber-800/50 rounded-xl flex items-start gap-2.5">
+            <i class="fa-solid fa-user-xmark text-amber-400 mt-0.5"></i>
+            <div>
+              <strong class="text-amber-300 font-bold block mb-0.5">Có ${unassignedTasks.length} tài liệu chưa gán Trainer:</strong>
+              <p class="text-[11px] text-slate-300">Cần phân công PIC vào các file này để tránh chậm tiến độ sản xuất bản thảo V1.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderTrainerWorkloadSensor() {
+      const container = document.getElementById('workloadGrid');
+      container.innerHTML = '';
+
+      let loadMap = {};
+      appState.trainers.forEach(name => {
+        loadMap[name] = { lead: 0, support: 0, totalScore: 0 };
+      });
+
+      appState.tasks.forEach(t => {
+        if (!t.trainers) return;
+        t.trainers.forEach((name, idx) => {
+          if (!loadMap[name]) loadMap[name] = { lead: 0, support: 0, totalScore: 0 };
+          if (idx === 0) {
+            loadMap[name].lead += 1;
+            loadMap[name].totalScore += 1.0;
+          } else {
+            loadMap[name].support += 1;
+            loadMap[name].totalScore += 0.5;
+          }
+        });
+      });
+
+      // Chỉ hiển thị các Trainer đang có việc, sắp xếp từ tải nặng xuống nhẹ
+      const activeTrainers = Object.keys(loadMap)
+        .filter(name => loadMap[name].totalScore > 0)
+        .sort((a, b) => loadMap[b].totalScore - loadMap[a].totalScore);
+
+      if (activeTrainers.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-4 text-xs text-slate-500 italic">Chưa có Trainer nào được phân công việc.</div>';
+        return;
+      }
+
+      activeTrainers.forEach(name => {
+        const data = loadMap[name];
+        const isOverload = data.totalScore >= 4;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border ${isOverload ? 'bg-rose-950/30 border-rose-800/60' : 'bg-slate-900/90 border-slate-800'}`;
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="font-bold text-xs text-white truncate" title="${name}">${name}</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${isOverload ? 'bg-rose-950 text-rose-400' : 'bg-slate-800 text-slate-400'}">${data.totalScore.toFixed(1)} tải</span>
+          </div>
+          <div class="flex items-center gap-2 text-[10px] text-slate-400">
+            <span>👑 ${data.lead} Lead</span>
+            <span>🤝 ${data.support} Sup</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     function saveProjectData(showToast = true) {
