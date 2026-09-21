@@ -6,6 +6,11 @@
   <title>PROTASK TRACKING - Command Center</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- FIREBASE SDK COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #0b1120; color: #f1f5f9; }
@@ -26,7 +31,9 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-lg font-black tracking-wider text-white">PROTASK <span class="text-cyan-400">TRACKING</span></h1>
-            <span id="productBadge" class="text-[10px] uppercase tracking-wider font-bold bg-cyan-950 text-cyan-400 border border-cyan-800/60 px-2 py-0.5 rounded-full">2 Sản phẩm</span>
+            <span id="cloudStatusBadge" class="text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Live Cloud
+            </span>
           </div>
           <p id="subHeader" class="text-xs text-slate-400 font-medium">CHIẾN DỊCH FLAGSHIP GALAXY • Command Center</p>
         </div>
@@ -42,13 +49,12 @@
           </button>
         </div>
 
-        <button onclick="saveProjectData(true)" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/20 transition-all">
-          <i class="fa-solid fa-floppy-disk"></i>
-          <span>Lưu Dự Án</span>
+        <button onclick="manualSaveProject()" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/20 transition-all">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Lưu & Đồng Bộ</span>
           <span id="lastSavedTime" class="text-[10px] text-emerald-200 font-normal ml-1"></span>
         </button>
 
-        <!-- XUẤT / NẠP DATA -->
         <button onclick="exportDataJSON()" title="Tải file dữ liệu .json về máy" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-700">
           <i class="fa-solid fa-file-export mr-1"></i>Xuất Data
         </button>
@@ -75,7 +81,7 @@
           </div>
           <div>
             <h2 class="text-sm font-black tracking-wide uppercase text-white">Quy Trình Khởi Tạo Chiến Dịch (4 Bước cho PIC)</h2>
-            <p class="text-xs text-slate-400">Điền thông tin bên dưới và bấm nút <strong class="text-cyan-300">BƯỚC 4: BẮT ĐẦU / ENTER</strong></p>
+            <p class="text-xs text-slate-400">Điền thông tin và bấm <strong class="text-cyan-300">BƯỚC 4: BẮT ĐẦU / LƯU CẤU HÌNH (ENTER)</strong></p>
           </div>
         </div>
         <span class="text-[10px] font-bold text-cyan-400 bg-cyan-950/80 px-2.5 py-1 rounded-full border border-cyan-800">CẤU HÌNH GTM FLAGSHIP</span>
@@ -239,7 +245,7 @@
         <div id="productCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5"></div>
       </div>
 
-      <!-- CỔNG TIÊN QUYẾT & RC TASK ADVISOR (2 CHẾ ĐỘ PHÂN TÍCH) -->
+      <!-- CỔNG TIÊN QUYẾT & RC TASK ADVISOR -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -306,7 +312,7 @@
 
   </main>
 
-  <!-- MODAL NHẬP GEMINI API KEY & XEM PHÂN TÍCH -->
+  <!-- MODAL GEMINI API -->
   <div id="geminiModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl p-6 space-y-4 max-h-[90vh] flex flex-col">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -343,6 +349,23 @@
   </div>
 
   <script>
+    // CẤU HÌNH FIREBASE REALTIME DATABASE TRỰC TIẾP
+    const firebaseConfig = {
+      apiKey: "AIzaSyBO6lrSZ9tS5ESITGzZR0S1QjTi5DIyNPI",
+      authDomain: "protask-tracking.firebaseapp.com",
+      databaseURL: "https://protask-tracking-default-rtdb.firebaseio.com",
+      projectId: "protask-tracking",
+      storageBucket: "protask-tracking.firebasestorage.app",
+      messagingSenderId: "938492181223",
+      appId: "1:938492181223:web:9e4d6b10b9011e32644042",
+      measurementId: "G-ML2BJMC3E5"
+    };
+
+    // Khởi tạo Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const projectRef = db.ref('protask_master_data');
+
     const STORAGE_KEY = 'PROTASK_TRACKING_MASTER_DATA';
     const GEMINI_KEY_STORAGE = 'PROTASK_GEMINI_API_KEY';
 
@@ -364,6 +387,7 @@
       tasks: []
     };
 
+    let isRemoteUpdate = false;
     let activeDropdownIndex = null;
 
     const BASE_PER_PRODUCT_TASKS = [
@@ -382,6 +406,7 @@
     ];
 
     function init() {
+      // 1. Tải dữ liệu tạm từ local cache
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
@@ -395,21 +420,66 @@
         generateTasksFromProducts();
       }
 
-      document.getElementById('projectNameInput').value = appState.projectName;
-      document.getElementById('dateEmbargoInput').value = appState.dateEmbargo;
-      document.getElementById('dateUnpackInput').value = appState.dateUnpack;
+      applyAppStateToUI();
 
-      document.getElementById('gate_hq').checked = appState.gates.hq;
-      document.getElementById('gate_spec').checked = appState.gates.spec;
-      document.getElementById('gate_mkt').checked = appState.gates.mkt;
-      document.getElementById('gate_sample').checked = appState.gates.sample;
-      
       const savedApiKey = localStorage.getItem(GEMINI_KEY_STORAGE);
       if (savedApiKey) document.getElementById('geminiApiKeyInput').value = savedApiKey;
+
+      // 2. LẮNG NGHE ĐỒNG BỘ THỜI GIAN THỰC TỪ FIREBASE
+      projectRef.on('value', (snapshot) => {
+        const cloudData = snapshot.val();
+        if (cloudData) {
+          isRemoteUpdate = true;
+          appState = cloudData;
+          appState.trainers = [...OFFICIAL_TRAINER_LIST];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+          applyAppStateToUI();
+          isRemoteUpdate = false;
+        } else {
+          // Chưa có dữ liệu trên mây, đẩy bản hiện tại lên làm gốc
+          syncToFirebase();
+        }
+      });
+    }
+
+    function applyAppStateToUI() {
+      document.getElementById('projectNameInput').value = appState.projectName || '';
+      document.getElementById('dateEmbargoInput').value = appState.dateEmbargo || '';
+      document.getElementById('dateUnpackInput').value = appState.dateUnpack || '';
+      document.getElementById('subHeader').textContent = `${appState.projectName} • Command Center`;
+
+      if (document.getElementById('gate_hq')) document.getElementById('gate_hq').checked = !!appState.gates?.hq;
+      if (document.getElementById('gate_spec')) document.getElementById('gate_spec').checked = !!appState.gates?.spec;
+      if (document.getElementById('gate_mkt')) document.getElementById('gate_mkt').checked = !!appState.gates?.mkt;
+      if (document.getElementById('gate_sample')) document.getElementById('gate_sample').checked = !!appState.gates?.sample;
 
       updateProductChips();
       renderTaskTable();
       updateDashboard();
+    }
+
+    // ĐẨY DỮ LIỆU LÊN FIREBASE REALTIME
+    function syncToFirebase(showToast = false) {
+      if (isRemoteUpdate) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+
+      projectRef.set(appState).then(() => {
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        const badge = document.getElementById('lastSavedTime');
+        if (badge) badge.textContent = `(${timeStr})`;
+        if (showToast) alert('✅ Đã lưu & đồng bộ thành công tới toàn bộ team!');
+      }).catch(err => {
+        console.error("Firebase sync error:", err);
+        if (showToast) alert('❌ Lỗi kết nối Firebase: ' + err.message);
+      });
+    }
+
+    function manualSaveProject() {
+      appState.projectName = document.getElementById('projectNameInput').value || 'CHIẾN DỊCH FLAGSHIP GALAXY';
+      appState.dateEmbargo = document.getElementById('dateEmbargoInput').value;
+      appState.dateUnpack = document.getElementById('dateUnpackInput').value;
+      syncToFirebase(true);
     }
 
     function generateTasksFromProducts() {
@@ -440,13 +510,12 @@
     function updateProductChips() {
       const container = document.getElementById('productList');
       container.innerHTML = '';
-      appState.products.forEach((p, idx) => {
+      (appState.products || []).forEach((p, idx) => {
         const chip = document.createElement('div');
         chip.className = 'flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-xs text-white';
         chip.innerHTML = `<span>${p}</span><button onclick="removeProduct(${idx})" class="text-slate-400 hover:text-rose-400 ml-1">✕</button>`;
         container.appendChild(chip);
       });
-      document.getElementById('productBadge').textContent = `${appState.products.length} Sản phẩm`;
     }
 
     function addProductFromInput() {
@@ -459,7 +528,7 @@
         generateTasksFromProducts();
         updateProductChips();
         renderTaskTable();
-        saveProjectData(false);
+        syncToFirebase();
       }
     }
 
@@ -469,7 +538,7 @@
       appState.tasks = appState.tasks.filter(t => t.product !== p);
       updateProductChips();
       renderTaskTable();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function triggerProjectStart() {
@@ -480,7 +549,7 @@
       document.getElementById('subHeader').textContent = `${appState.projectName} • Command Center`;
       renderTaskTable();
       updateDashboard();
-      saveProjectData(true);
+      syncToFirebase(true);
     }
 
     function calculateDeadline(task) {
@@ -505,7 +574,7 @@
 
     function checkTaskDependency(task) {
       if (!task.depGate) return { ok: true, msg: 'Đủ điều kiện' };
-      const gateOpen = appState.gates[task.depGate];
+      const gateOpen = appState.gates ? appState.gates[task.depGate] : true;
       if (!gateOpen) {
         const gateNames = { hq: 'Workshop Deck HQ', spec: 'Thông số Spec', mkt: 'MKT Term Final', sample: 'Máy Mẫu Sample' };
         return { ok: false, msg: `Chờ ${gateNames[task.depGate] || task.depGate}` };
@@ -514,10 +583,11 @@
     }
 
     function toggleGate(gateKey, val) {
+      if (!appState.gates) appState.gates = {};
       appState.gates[gateKey] = val;
       renderTaskTable();
       updateDashboard();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function renderTrainerTags(trainers) {
@@ -539,7 +609,7 @@
       tbody.innerHTML = '';
       const query = (document.getElementById('tableSearch')?.value || '').toLowerCase();
 
-      appState.tasks.forEach((t, i) => {
+      (appState.tasks || []).forEach((t, i) => {
         if (!t.trainers) t.trainers = t.trainer ? [t.trainer] : [];
 
         const trainerStr = t.trainers.join(' ');
@@ -654,7 +724,7 @@
       }
       appState.tasks[taskIdx].trainers = trainers;
       renderTaskTable();
-      saveProjectData(false);
+      syncToFirebase();
 
       setTimeout(() => {
         const dd = document.getElementById(`trainerDropdown_${taskIdx}`);
@@ -666,20 +736,20 @@
       appState.tasks[index].status = step;
       renderTaskTable();
       updateDashboard();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function updateTaskLink(index, val) {
       appState.tasks[index].link = val;
       updateDashboard();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function deleteTask(index) {
       appState.tasks.splice(index, 1);
       renderTaskTable();
       updateDashboard();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function addNewBlankTask() {
@@ -695,7 +765,7 @@
         link: ''
       });
       renderTaskTable();
-      saveProjectData(false);
+      syncToFirebase();
     }
 
     function switchTab(tab) {
@@ -717,7 +787,7 @@
     }
 
     function updateDashboard() {
-      const total = appState.tasks.length;
+      const total = (appState.tasks || []).length;
       if (total === 0) return;
       const completed = appState.tasks.filter(t => t.status === 'VF' || t.status === 'PM').length;
       const withLinks = appState.tasks.filter(t => t.link && t.link.trim() !== '').length;
@@ -822,7 +892,7 @@
       ratioBar.innerHTML = '';
       cardsContainer.innerHTML = '';
 
-      const allGroups = ['Chung', ...appState.products];
+      const allGroups = ['Chung', ...(appState.products || [])];
       const colors = ['#64748b', '#06b6d4', '#a855f7', '#ec4899', '#3b82f6', '#10b981'];
 
       allGroups.forEach((groupName, idx) => {
@@ -864,7 +934,6 @@
       });
     }
 
-    // CHẾ ĐỘ 1: ĐỀ XUẤT NHANH (OFFLINE SMART ENGINE)
     function runLocalSmartAdvice() {
       const advisorContent = document.getElementById('advisorContent');
       const healthBadge = document.getElementById('advisorHealthStatus');
@@ -874,7 +943,7 @@
       let unassignedTasks = [];
       let noLinkTasks = [];
 
-      appState.tasks.forEach(t => {
+      (appState.tasks || []).forEach(t => {
         const dep = checkTaskDependency(t);
         if (!dep.ok) blockedTasks.push({ task: t, reason: dep.msg });
         if (!t.trainers || t.trainers.length === 0) unassignedTasks.push(t);
@@ -944,7 +1013,6 @@
       advisorContent.innerHTML = html;
     }
 
-    // CHẾ ĐỘ 2: PHÂN TÍCH GEMINI API (MODEL MỚI NHẤT & DỰ PHÒNG THÔNG MINH)
     function openGeminiModal() {
       document.getElementById('geminiModal').classList.remove('hidden');
     }
@@ -981,7 +1049,7 @@ THÔNG TIN HIỆN TRẠNG:
 - Tổng số tài liệu: ${total} (Đã chốt hoàn tất VF/PM: ${completed}/${total})
 - Tài liệu đang bị Blocked do cổng tiên quyết: ${blocked.length > 0 ? blocked.join('; ') : 'Không có'}
 - Tài liệu chưa gán Trainer: ${unassigned.length > 0 ? unassigned.join('; ') : 'Không có'}
-- Trạng thái cổng tiên quyết: HQ Deck (${appState.gates.hq}), Thông số Spec (${appState.gates.spec}), MKT Term (${appState.gates.mkt}), Máy mẫu Sample (${appState.gates.sample})
+- Trạng thái cổng tiên quyết: HQ Deck (${appState.gates?.hq}), Thông số Spec (${appState.gates?.spec}), MKT Term (${appState.gates?.mkt}), Máy mẫu Sample (${appState.gates?.sample})
 
 YÊU CẦU:
 1. **Đánh Giá Sức Khỏe Dự Án** (Tóm tắt 2-3 câu về tiến độ và rủi ro lớn nhất)
@@ -1038,7 +1106,7 @@ YÊU CẦU:
         loadMap[name] = { lead: 0, support: 0, totalScore: 0 };
       });
 
-      appState.tasks.forEach(t => {
+      (appState.tasks || []).forEach(t => {
         if (!t.trainers) return;
         t.trainers.forEach((name, idx) => {
           if (!loadMap[name]) loadMap[name] = { lead: 0, support: 0, totalScore: 0 };
@@ -1080,16 +1148,6 @@ YÊU CẦU:
       });
     }
 
-    function saveProjectData(showToast = true) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-      const now = new Date();
-      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-      const badge = document.getElementById('lastSavedTime');
-      if (badge) badge.textContent = `(${timeStr})`;
-      if (showToast) alert('✅ Đã lưu toàn bộ tiến độ vào bộ nhớ!');
-    }
-
-    // XUẤT DATA (.JSON)
     function exportDataJSON() {
       appState.projectName = document.getElementById('projectNameInput').value || appState.projectName;
       appState.dateEmbargo = document.getElementById('dateEmbargoInput').value || appState.dateEmbargo;
@@ -1104,7 +1162,6 @@ YÊU CẦU:
       document.body.removeChild(a);
     }
 
-    // NẠP DATA (.JSON) CHUẨN HÓA & TỰ ĐỘNG RESET INPUT
     function importDataJSON(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1113,10 +1170,7 @@ YÊU CẦU:
       reader.onload = function(e) {
         try {
           const parsed = JSON.parse(e.target.result);
-          
-          if (!parsed || typeof parsed !== 'object') {
-            throw new Error('Dữ liệu JSON rỗng hoặc không hợp lệ');
-          }
+          if (!parsed || typeof parsed !== 'object') throw new Error('Dữ liệu JSON rỗng');
 
           appState = {
             projectName: parsed.projectName || 'CHIẾN DỊCH FLAGSHIP GALAXY',
@@ -1129,32 +1183,17 @@ YÊU CẦU:
           };
 
           appState.tasks.forEach(t => {
-            if (!t.trainers) {
-              t.trainers = t.trainer ? [t.trainer] : [];
-            }
+            if (!t.trainers) t.trainers = t.trainer ? [t.trainer] : [];
             if (!t.status) t.status = 'M';
             if (t.link === undefined) t.link = '';
           });
 
-          document.getElementById('projectNameInput').value = appState.projectName;
-          document.getElementById('dateEmbargoInput').value = appState.dateEmbargo;
-          document.getElementById('dateUnpackInput').value = appState.dateUnpack;
-          document.getElementById('subHeader').textContent = `${appState.projectName} • Command Center`;
-
-          if (document.getElementById('gate_hq')) document.getElementById('gate_hq').checked = !!appState.gates.hq;
-          if (document.getElementById('gate_spec')) document.getElementById('gate_spec').checked = !!appState.gates.spec;
-          if (document.getElementById('gate_mkt')) document.getElementById('gate_mkt').checked = !!appState.gates.mkt;
-          if (document.getElementById('gate_sample')) document.getElementById('gate_sample').checked = !!appState.gates.sample;
-
-          updateProductChips();
-          renderTaskTable();
-          updateDashboard();
-          saveProjectData(false);
+          applyAppStateToUI();
+          syncToFirebase();
 
           event.target.value = '';
-          alert('✅ Nạp dữ liệu dự án thành công!');
+          alert('✅ Nạp dữ liệu dự án thành công và đã đồng bộ lên mây!');
         } catch (err) {
-          console.error(err);
           alert('❌ Lỗi nạp file: ' + err.message);
           event.target.value = '';
         }
