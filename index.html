@@ -48,6 +48,7 @@
           <span id="lastSavedTime" class="text-[10px] text-emerald-200 font-normal ml-1"></span>
         </button>
 
+        <!-- XUẤT / NẠP DATA -->
         <button onclick="exportDataJSON()" title="Tải file dữ liệu .json về máy" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-700">
           <i class="fa-solid fa-file-export mr-1"></i>Xuất Data
         </button>
@@ -65,7 +66,7 @@
 
   <main class="max-w-7xl mx-auto p-6 w-full flex-1 space-y-6">
 
-    <!-- KHỐI 4 BƯỚC KHỞI TẠO (TRANG CHỦ) -->
+    <!-- KHỐI 4 BƯỚC KHỞI TẠO -->
     <div id="setupBlock" class="glass-panel rounded-2xl p-6 border border-cyan-500/20 relative shadow-2xl">
       <div class="flex items-center justify-between mb-5 border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
@@ -988,7 +989,6 @@ YÊU CẦU:
 3. **Kế Hoạch Hành Động 24h - 48h Cho PIC** (Liệt kê theo mức ưu tiên P0, P1, P2)
       `;
 
-      // Ưu tiên model mới nhất gemini-2.5-flash, tự động fallback nếu cần
       const candidateModels = [
         'gemini-2.5-flash',
         'gemini-1.5-flash-latest',
@@ -1089,26 +1089,74 @@ YÊU CẦU:
       if (showToast) alert('✅ Đã lưu toàn bộ tiến độ vào bộ nhớ!');
     }
 
+    // XUẤT DATA (.JSON)
     function exportDataJSON() {
+      appState.projectName = document.getElementById('projectNameInput').value || appState.projectName;
+      appState.dateEmbargo = document.getElementById('dateEmbargoInput').value || appState.dateEmbargo;
+      appState.dateUnpack = document.getElementById('dateUnpackInput').value || appState.dateUnpack;
+
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const a = document.createElement('a');
       a.href = dataStr;
-      a.download = `PROTASK_${appState.projectName.replace(/\s+/g, '_')}_DATA.json`;
+      a.download = `PROTASK_${(appState.projectName || 'PROJECT').replace(/\s+/g, '_')}_DATA.json`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
     }
 
+    // NẠP DATA (.JSON) CHUẨN HÓA & TỰ ĐỘNG RESET INPUT
     function importDataJSON(event) {
       const file = event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
-          appState = JSON.parse(e.target.result);
-          init();
+          const parsed = JSON.parse(e.target.result);
+          
+          if (!parsed || typeof parsed !== 'object') {
+            throw new Error('Dữ liệu JSON rỗng hoặc không hợp lệ');
+          }
+
+          appState = {
+            projectName: parsed.projectName || 'CHIẾN DỊCH FLAGSHIP GALAXY',
+            dateEmbargo: parsed.dateEmbargo || '',
+            dateUnpack: parsed.dateUnpack || '',
+            products: Array.isArray(parsed.products) ? parsed.products : ['Galaxy Z Fold', 'Galaxy Z Flip'],
+            trainers: [...OFFICIAL_TRAINER_LIST],
+            gates: parsed.gates || { hq: true, spec: true, mkt: true, sample: false },
+            tasks: Array.isArray(parsed.tasks) ? parsed.tasks : []
+          };
+
+          appState.tasks.forEach(t => {
+            if (!t.trainers) {
+              t.trainers = t.trainer ? [t.trainer] : [];
+            }
+            if (!t.status) t.status = 'M';
+            if (t.link === undefined) t.link = '';
+          });
+
+          document.getElementById('projectNameInput').value = appState.projectName;
+          document.getElementById('dateEmbargoInput').value = appState.dateEmbargo;
+          document.getElementById('dateUnpackInput').value = appState.dateUnpack;
+          document.getElementById('subHeader').textContent = `${appState.projectName} • Command Center`;
+
+          if (document.getElementById('gate_hq')) document.getElementById('gate_hq').checked = !!appState.gates.hq;
+          if (document.getElementById('gate_spec')) document.getElementById('gate_spec').checked = !!appState.gates.spec;
+          if (document.getElementById('gate_mkt')) document.getElementById('gate_mkt').checked = !!appState.gates.mkt;
+          if (document.getElementById('gate_sample')) document.getElementById('gate_sample').checked = !!appState.gates.sample;
+
+          updateProductChips();
+          renderTaskTable();
+          updateDashboard();
           saveProjectData(false);
+
+          event.target.value = '';
           alert('✅ Nạp dữ liệu dự án thành công!');
         } catch (err) {
-          alert('❌ File không đúng định dạng JSON!');
+          console.error(err);
+          alert('❌ Lỗi nạp file: ' + err.message);
+          event.target.value = '';
         }
       };
       reader.readAsText(file);
