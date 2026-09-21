@@ -65,7 +65,7 @@
 
   <main class="max-w-7xl mx-auto p-6 w-full flex-1 space-y-6">
 
-    <!-- KHỐI 4 BƯỚC KHỞI TẠO -->
+    <!-- KHỐI 4 BƯỚC KHỞI TẠO (TRANG CHỦ) -->
     <div id="setupBlock" class="glass-panel rounded-2xl p-6 border border-cyan-500/20 relative shadow-2xl">
       <div class="flex items-center justify-between mb-5 border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2.5">
@@ -132,7 +132,7 @@
       </button>
     </div>
 
-    <!-- TAB TRANG CHỦ -->
+    <!-- TAB TRANG CHỦ (BẢNG TÁC NGHIỆP) -->
     <div id="homeTab" class="space-y-4">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <h3 class="text-sm font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
@@ -203,9 +203,8 @@
         </div>
       </div>
 
-      <!-- PHỄU 6 NẤC QUY TRÌNH (INSPECTION FUNNEL) & CẢNH BÁO 48H -->
+      <!-- PHỄU 6 NẤC QUY TRÌNH & CẢNH BÁO 48H -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- PHỄU 6 NẤC -->
         <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-slate-800 shadow-xl space-y-3.5">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
@@ -216,7 +215,6 @@
           <div id="funnelStepsContainer" class="grid grid-cols-6 gap-2 text-center"></div>
         </div>
 
-        <!-- DEADLINE RADAR (HẠN CHÓT 48H) -->
         <div class="glass-panel p-5 rounded-2xl border border-slate-800 shadow-xl space-y-3">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center gap-2">
@@ -242,7 +240,6 @@
 
       <!-- CỔNG TIÊN QUYẾT & RC TASK ADVISOR (2 CHẾ ĐỘ PHÂN TÍCH) -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- CỔNG TIÊN QUYẾT -->
         <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
@@ -270,7 +267,6 @@
           </div>
         </div>
 
-        <!-- RC TASK ADVISOR VỚI 2 CHẾ ĐỘ PHÂN TÍCH -->
         <div class="lg:col-span-2 glass-panel p-5 rounded-2xl border border-slate-800 space-y-3.5 shadow-xl">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2 flex-wrap gap-2">
             <div class="flex items-center gap-2">
@@ -280,7 +276,6 @@
               <span id="advisorHealthStatus" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">BÌNH THƯỜNG</span>
             </div>
             
-            <!-- 2 NÚT PHÂN TÍCH -->
             <div class="flex items-center gap-2">
               <button onclick="runLocalSmartAdvice()" class="bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 px-3 py-1 rounded-lg text-xs font-bold transition-all">
                 <i class="fa-solid fa-bolt mr-1"></i>Đề Xuất Nhanh (24h)
@@ -340,7 +335,6 @@
         <p class="text-[10px] text-slate-500 italic">* API Key được lưu trực tiếp tại trình duyệt máy bạn và không gửi đi đâu ngoài máy chủ Google Gemini API.</p>
       </div>
 
-      <!-- KHUNG HIỂN THỊ KẾT QUẢ TỪ GEMINI -->
       <div id="geminiResultBox" class="flex-1 min-h-[160px] max-h-80 overflow-y-auto custom-scroll bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-xs space-y-2.5 text-slate-300 leading-relaxed">
         <div class="text-slate-500 italic text-center py-8">Bấm nút "Phân Tích" để nhận báo cáo tham mưu từ Gemini...</div>
       </div>
@@ -749,19 +743,10 @@
 
       document.getElementById('totalTasksCountLabel').textContent = `Tổng: ${total} tài liệu`;
 
-      // 1. Phễu 6 nấc quy trình
       renderFunnelSteps(total);
-
-      // 2. Radar cận hạn chót (≤ 48h)
       renderUrgentTasks();
-
-      // 3. Tỷ trọng sản phẩm
       renderProductRatioAndCards(total);
-
-      // 4. Advisor mặc định
       runLocalSmartAdvice();
-
-      // 5. Workload Sensor
       renderTrainerWorkloadSensor();
     }
 
@@ -958,7 +943,7 @@
       advisorContent.innerHTML = html;
     }
 
-    // CHẾ ĐỘ 2: PHÂN TÍCH GEMINI API
+    // CHẾ ĐỘ 2: PHÂN TÍCH GEMINI API (MODEL MỚI NHẤT & DỰ PHÒNG THÔNG MINH)
     function openGeminiModal() {
       document.getElementById('geminiModal').classList.remove('hidden');
     }
@@ -981,56 +966,67 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích...';
       resultBox.innerHTML = '<div class="text-cyan-400 animate-pulse text-center py-8"><i class="fa-solid fa-brain mr-2"></i>Gemini đang phân tích ma trận tiến độ dự án của bạn...</div>';
 
-      // Chuẩn bị payload ẩn danh gửi lên Gemini
       const total = appState.tasks.length;
       const completed = appState.tasks.filter(t => t.status === 'VF' || t.status === 'PM').length;
-      const blocked = appState.tasks.filter(t => !checkTaskDependency(t).ok).map(t => `${t.name} (Lý do: ${checkTaskDependency(t).msg})`);
+      const blocked = appState.tasks.filter(t => !checkTaskDependency(t).ok).map(t => `${t.name} (${checkTaskDependency(t).msg})`);
       const unassigned = appState.tasks.filter(t => !t.trainers || t.trainers.length === 0).map(t => t.name);
 
       const promptText = `
-Bạn là Trợ lý Cố vấn Quản trị Dự án Cấp cao (Senior PM Advisor) cho chiến dịch GTM Flagship. Hãy phân tích hiện trạng dự án dưới đây và đưa ra báo cáo tham mưu ngắn gọn, sắc bén và thực tế cho PIC:
+Bạn là Trợ lý Cố vấn Quản trị Dự án GTM Flagship cấp cao. Hãy phân tích hiện trạng dự án dưới đây và đưa ra báo cáo tham mưu ngắn gọn, trực diện, giàu tính hành động cho PIC:
 
 THÔNG TIN HIỆN TRẠNG:
-- Tên dự án: ${appState.projectName}
-- Deadline Embargo (Giai đoạn 1): ${appState.dateEmbargo}
-- Deadline Unpack (Giai đoạn 2): ${appState.dateUnpack}
-- Tổng số tài liệu: ${total} (Đã chốt hoàn tất: ${completed}/${total})
-- Danh sách tài liệu đang bị Blocked do cổng tiên quyết: ${blocked.length > 0 ? blocked.join('; ') : 'Không có'}
-- Danh sách tài liệu chưa gán Trainer: ${unassigned.length > 0 ? unassigned.join('; ') : 'Không có'}
-- Trạng thái cổng tiên quyết: HQ Deck (${appState.gates.hq}), Spec (${appState.gates.spec}), MKT Term (${appState.gates.mkt}), Sample (${appState.gates.sample})
+- Chiến dịch: ${appState.projectName}
+- Deadline Embargo (GĐ 1): ${appState.dateEmbargo} | Deadline Unpack (GĐ 2): ${appState.dateUnpack}
+- Tổng số tài liệu: ${total} (Đã chốt hoàn tất VF/PM: ${completed}/${total})
+- Tài liệu đang bị Blocked do cổng tiên quyết: ${blocked.length > 0 ? blocked.join('; ') : 'Không có'}
+- Tài liệu chưa gán Trainer: ${unassigned.length > 0 ? unassigned.join('; ') : 'Không có'}
+- Trạng thái cổng tiên quyết: HQ Deck (${appState.gates.hq}), Thông số Spec (${appState.gates.spec}), MKT Term (${appState.gates.mkt}), Máy mẫu Sample (${appState.gates.sample})
 
-YÊU CẦU ĐẦU RA (Định dạng Markdown sạch, không mở đầu dài dòng):
+YÊU CẦU:
 1. **Đánh Giá Sức Khỏe Dự Án** (Tóm tắt 2-3 câu về tiến độ và rủi ro lớn nhất)
-2. **Điểm Nghẽn Trọng Tâm (Critical Bottlenecks)**
-3. **Kế Hoạch Hành Động 24h - 48h Cho PIC** (Ghi rõ việc cần làm theo mức ưu tiên P0, P1, P2)
+2. **Điểm Nghẽn Trọng Tâm Cần Tháo Gỡ**
+3. **Kế Hoạch Hành Động 24h - 48h Cho PIC** (Liệt kê theo mức ưu tiên P0, P1, P2)
       `;
 
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
-          })
-        });
+      // Ưu tiên model mới nhất gemini-2.5-flash, tự động fallback nếu cần
+      const candidateModels = [
+        'gemini-2.5-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-pro'
+      ];
 
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message);
+      let lastError = null;
+      let successText = null;
 
-        const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Không nhận được nội dung phân tích.';
-        
-        // Render Markdown cơ bản
-        resultBox.innerHTML = aiReply
+      for (const model of candidateModels) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            successText = data.candidates[0].content.parts[0].text;
+            break;
+          }
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      if (successText) {
+        resultBox.innerHTML = successText
           .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
           .replace(/\n\n/g, '<br><br>')
           .replace(/\n/g, '<br>');
-
-      } catch (err) {
-        resultBox.innerHTML = `<div class="text-rose-400 p-3 bg-rose-950/40 rounded-lg border border-rose-800">❌ Lỗi kết nối Gemini API: ${err.message}. Vui lòng kiểm tra lại API Key.</div>`;
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Phân Tích';
+      } else {
+        resultBox.innerHTML = `<div class="text-rose-400 p-3 bg-rose-950/40 rounded-lg border border-rose-800">❌ Lỗi kết nối Gemini API: ${lastError?.message || 'Không thể gọi model'}. Vui lòng kiểm tra lại API Key.</div>`;
       }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Phân Tích';
     }
 
     function renderTrainerWorkloadSensor() {
